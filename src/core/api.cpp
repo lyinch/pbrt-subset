@@ -91,6 +91,11 @@ namespace pbrt {
 
     }
 
+    void pbrtTranslate(float dx, float dy, float dz) {
+        FOR_ACTIVE_TRANSFORMS(curTransform[i] = curTransform[i] *
+                                                Translate(Vector3f(dx, dy, dz));)
+    }
+
 
     std::shared_ptr<Sampler> MakeSampler(const std::string &name,
                                          const Film *film) {

@@ -4,6 +4,8 @@
 #include <samplers/random.h>
 #include <filters/box.h>
 #include <map>
+#include <integrators/whitted.h>
+#include <lights/point.h>
 #include "api.h"
 #include "camera.h"
 #include "scene.h"
@@ -75,6 +77,15 @@ namespace pbrt {
         FOR_ACTIVE_TRANSFORMS(curTransform[i] = curTransform[i] * lookAt;);
     }
 
+    std::shared_ptr<Light> MakeLight(const std::string &name,
+                                     const Transform &light2world) {
+        std::shared_ptr<Light> light;
+        if (name == "point")
+            light = CreatePointLight(light2world);
+        return light;
+
+    }
+
     void pbrtInit(const Options &opt) {
         PbrtOptions = opt;
         renderOptions.reset(new RenderOptions);
@@ -110,7 +121,7 @@ namespace pbrt {
     }
 
     void pbrtLightSource(const std::string &name) {
-        std::shared_ptr<Light> lt = MakeLight(name, curTransform[0], mi);
+        std::shared_ptr<Light> lt = MakeLight(name, curTransform[0]);
         renderOptions->lights.push_back(lt);
 
     }

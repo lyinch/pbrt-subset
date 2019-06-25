@@ -8,7 +8,6 @@
 #include "main.h"
 
 namespace pbrt{
-    Options PbrtOptions;
 
     void pbrtInit(const Options &opt);
     void pbrtCleanup();

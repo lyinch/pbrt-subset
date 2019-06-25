@@ -14,6 +14,27 @@
 #include "light.h"
 
 namespace pbrt {
+    Options PbrtOptions;
+    constexpr int MaxTransforms = 2;
+    constexpr int AllTransformsBits = (1 << MaxTransforms) - 1;
+
+    struct TransformSet{
+        Transform &operator[](int i) {
+            return t[i];
+        }
+
+        const Transform &operator[](int i) const {
+            return t[i];
+        }
+
+        friend TransformSet Inverse(const TransformSet &ts) {
+            TransformSet tInv;
+            for (int i = 0; i < MaxTransforms; ++i) tInv.t[i] = Inverse(ts.t[i]);
+            return tInv;
+        }
+    private:
+        Transform t[MaxTransforms];
+    };
 
     struct RenderOptions {
         Integrator *MakeIntegrator() const;

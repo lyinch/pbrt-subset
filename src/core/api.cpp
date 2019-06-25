@@ -58,6 +58,7 @@ namespace pbrt {
     static GraphicsState graphicsState;
     static std::unique_ptr<RenderOptions> renderOptions;
     static TransformSet curTransform;
+    static uint32_t activeTransformBits = AllTransformsBits;
 
 #define FOR_ACTIVE_TRANSFORMS(expr)           \
     for (int i = 0; i < MaxTransforms; ++i)   \

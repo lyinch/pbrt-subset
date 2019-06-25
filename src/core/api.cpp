@@ -92,7 +92,9 @@ namespace pbrt {
     }
 
     void pbrtWorldBegin() {
-
+        for (int i = 0; i < MaxTransforms; ++i) curTransform[i] = Transform();
+        activeTransformBits = AllTransformsBits;
+        namedCoordinateSystems["world"] = curTransform;
     }
 
     void pbrtWorldEnd() {

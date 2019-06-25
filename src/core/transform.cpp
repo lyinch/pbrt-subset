@@ -54,4 +54,8 @@ namespace pbrt{
         cameraToWorld.m[3][2] = 0.;
         return Transform(Inverse(cameraToWorld), cameraToWorld);
     }
+
+    Transform Transform::operator*(const Transform &t2) const {
+        return Transform(Matrix4x4::Mul(m, t2.m), Matrix4x4::Mul(t2.mInv, mInv));
+    }
 }

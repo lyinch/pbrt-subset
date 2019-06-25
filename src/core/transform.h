@@ -21,6 +21,15 @@ namespace pbrt{
         friend Matrix4x4 Transpose(const Matrix4x4 &);
         friend Matrix4x4 Inverse(const Matrix4x4 &);
 
+        static Matrix4x4 Mul(const Matrix4x4 &m1, const Matrix4x4 &m2) {
+            Matrix4x4 r;
+            for (int i = 0; i < 4; ++i)
+                for (int j = 0; j < 4; ++j)
+                    r.m[i][j] = m1.m[i][0] * m2.m[0][j] + m1.m[i][1] * m2.m[1][j] +
+                                m1.m[i][2] * m2.m[2][j] + m1.m[i][3] * m2.m[3][j];
+            return r;
+        }
+
         float m[4][4];
     };
         class Transform {
@@ -38,6 +47,8 @@ namespace pbrt{
             friend Transform Inverse(const Transform &t) {
                 return Transform(t.mInv, t.m);
             }
+            Transform operator*(const Transform &t2) const;
+
         private:
             // Transform Private Data
             Matrix4x4 m, mInv;

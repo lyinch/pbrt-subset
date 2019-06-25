@@ -3,6 +3,7 @@
 //
 #include <samplers/random.h>
 #include <filters/box.h>
+#include <map>
 #include "api.h"
 #include "camera.h"
 #include "scene.h"
@@ -38,9 +39,7 @@ namespace pbrt {
 
     struct RenderOptions {
         Integrator *MakeIntegrator() const;
-
         Scene *MakeScene();
-
         Camera *MakeCamera() const;
 
         std::string FilterName = "box";
@@ -48,6 +47,9 @@ namespace pbrt {
         std::string SamplerName = "random";
         std::string IntegratorName = "whitted";
         std::string CameraName = "orthographic";
+        TransformSet CameraToWorld;
+        std::vector<std::shared_ptr<Light>> lights;
+
     };
 
     struct GraphicsState {
@@ -59,6 +61,7 @@ namespace pbrt {
     static std::unique_ptr<RenderOptions> renderOptions;
     static TransformSet curTransform;
     static uint32_t activeTransformBits = AllTransformsBits;
+    static std::map<std::string, TransformSet> namedCoordinateSystems;
 
 #define FOR_ACTIVE_TRANSFORMS(expr)           \
     for (int i = 0; i < MaxTransforms; ++i)   \
@@ -80,6 +83,8 @@ namespace pbrt {
 
     void pbrtCamera(const std::string &name) {
         renderOptions->CameraName = name;
+        renderOptions->CameraToWorld = Inverse(curTransform);
+        namedCoordinateSystems["camera"] = renderOptions->CameraToWorld;
     }
 
     void pbrtIntegrator(const std::string &name) {

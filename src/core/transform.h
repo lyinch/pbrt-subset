@@ -54,6 +54,8 @@ namespace pbrt{
             Matrix4x4 m, mInv;
     };
 
+    Transform Translate(const Vector3f &delta);
+
     Transform LookAt(const Point3f &pos, const Point3f &look, const Vector3f &up);
 
 }

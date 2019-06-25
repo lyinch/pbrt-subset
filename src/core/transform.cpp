@@ -55,6 +55,14 @@ namespace pbrt{
         return Transform(Inverse(cameraToWorld), cameraToWorld);
     }
 
+    Transform Translate(const Vector3f &delta) {
+        Matrix4x4 m(1, 0, 0, delta.x, 0, 1, 0, delta.y, 0, 0, 1, delta.z, 0, 0, 0,
+                    1);
+        Matrix4x4 minv(1, 0, 0, -delta.x, 0, 1, 0, -delta.y, 0, 0, 1, -delta.z, 0,
+                       0, 0, 1);
+        return Transform(m, minv);
+    }
+
     Transform Transform::operator*(const Transform &t2) const {
         return Transform(Matrix4x4::Mul(m, t2.m), Matrix4x4::Mul(t2.mInv, mInv));
     }

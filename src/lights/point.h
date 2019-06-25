@@ -25,5 +25,6 @@ namespace pbrt{
         const Spectrum I;
 
     };
-}
+    std::shared_ptr<PointLight> CreatePointLight(const Transform &light2world);
+    }
 #endif //PBRT_WHITTED_POINT_H

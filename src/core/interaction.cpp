@@ -11,7 +11,7 @@ namespace pbrt {
                                            const pbrt::Normal3f &dndu, const pbrt::Normal3f &dndv,
                                            const pbrt::Shape *sh, int faceIndex):
 
-    Interaction(p, Normal3f(Normalize(Cross(dpdu, dpdv))), pError, wo, nullptr),
+    Interaction(p, Normal3f(Normalize(Cross(dpdu, dpdv))), wo, nullptr),
     uv(uv),
     dpdu(dpdu),
     dpdv(dpdv),

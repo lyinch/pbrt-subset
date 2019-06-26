@@ -13,15 +13,14 @@
      struct Interaction {
          Interaction() = default;
 
-         Interaction(const Point3f &p, const Normal3f &n, const Vector3f &pError, const Vector3f &wo) :
-                 p(p), pError(pError), wo(wo), n(n) {}
+         Interaction(const Point3f &p, const Normal3f &n, const Vector3f &wo) :
+                 p(p), wo(wo), n(n) {}
 
          Ray SpawnRay(const Vector3f &d) const {
              Point3f o = OffsetRayOrigin(p, pError, n, d);
-             return Ray(o, d, Infinity);
+             return Ray(o, d, Infinity,);
          }
          Point3f p;
-         Vector3f pError;
          Vector3f wo;
          Normal3f n;
 
@@ -31,7 +30,7 @@
      public:
 
          SurfaceInteraction() {}
-         SurfaceInteraction(const Point3f &p, const Vector3f &pError,
+         SurfaceInteraction(const Point3f &p,
                             const Point2f &uv, const Vector3f &wo,
                             const Vector3f &dpdu, const Vector3f &dpdv,
                             const Normal3f &dndu, const Normal3f &dndv,

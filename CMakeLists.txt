@@ -48,6 +48,7 @@ FILE ( GLOB SOURCE
         src/cameras/*.cpp
         src/integrators/*.cpp
         src/lights/*.cpp
+        src/shapes/*.cpp
         )
 
 INCLUDE_DIRECTORIES(src)

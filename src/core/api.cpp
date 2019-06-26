@@ -127,7 +127,7 @@ namespace pbrt {
     }
 
     void pbrtShape(const std::string &name) {
-
+        std::vector<std::shared_ptr<Primitive>> prims;
 
     }
 

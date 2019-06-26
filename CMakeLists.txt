@@ -20,6 +20,7 @@ SET ( CORE_SOURCE
         src/core/film.cpp
         src/core/memory.cpp
         src/core/light.cpp
+        src/core/primitive.cpp
         )
 
 
@@ -41,6 +42,7 @@ SET ( CORE_HEADERS
         src/core/film.h
         src/core/memory.h
         src/core/light.h
+        src/core/primitive.h
         )
 
 FILE ( GLOB SOURCE

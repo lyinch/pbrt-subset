@@ -5,7 +5,6 @@
 #ifndef PBRT_WHITTED_MAIN_H
 #define PBRT_WHITTED_MAIN_H
 
-#include "spectrum.h"
 #include <string>
 #include <memory>
 #include <string>
@@ -25,11 +24,14 @@ namespace pbrt{
     template <typename T>
     class Normal3;
 
+    class RGBSpectrum;
     typedef RGBSpectrum Spectrum;
     struct CameraSample;
     class FilmTile;
     class VisibilityTester;
     class Scene;
+    class Sphere;
+    class Shape;
     struct Options {
         Options() {
             cropWindow[0][0] = 0;
@@ -44,7 +46,22 @@ namespace pbrt{
 
     // constants
     static constexpr float Infinity = std::numeric_limits<float>::infinity();
+    static constexpr float Pi = 3.14159265358979323846;
 
+
+    template <typename T, typename U, typename V>
+    inline T Clamp(T val, U low, V high) {
+        if (val < low)
+            return low;
+        else if (val > high)
+            return high;
+        else
+            return val;
+    }
+
+    inline float Radians(float deg) { return (Pi / 180) * deg; }
+
+    inline float Degrees(float rad) { return (180 / Pi) * rad; }
 }
 
 #endif //PBRT_WHITTED_MAIN_H

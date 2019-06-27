@@ -22,6 +22,8 @@ SET ( CORE_SOURCE
         src/core/light.cpp
         src/core/primitive.cpp
         src/core/reflection.cpp
+        src/core/material.cpp
+        src/core/texture.cpp
         )
 
 
@@ -45,7 +47,9 @@ SET ( CORE_HEADERS
         src/core/light.h
         src/core/primitive.h
         src/core/reflection.h
-        src/core/material.cpp src/core/material.h)
+        src/core/material.h
+        src/core/texture.h
+        )
 
 FILE ( GLOB SOURCE
         src/filters/*.cpp
@@ -54,6 +58,7 @@ FILE ( GLOB SOURCE
         src/lights/*.cpp
         src/shapes/*.cpp
         src/materials/*.cpp
+        src/textures/*.cpp
         )
 
 INCLUDE_DIRECTORIES(src)

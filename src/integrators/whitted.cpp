@@ -2,9 +2,10 @@
 // Created by Thierry Backes on 2019-06-19.
 //
 
-#include <core/interaction.h>
-#include <core/light.h>
-#include "whitted.h"
+#include "integrators/whitted.h"
+#include "interaction.h"
+#include "camera.h"
+#include "film.h"
 
 pbrt::Spectrum pbrt::WhittedIntegrator::Li(const RayDifferential &ray, const pbrt::Scene &scene, pbrt::Sampler &sampler,
                                            MemoryArena &arena, int depth) const {

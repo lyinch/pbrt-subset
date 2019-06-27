@@ -5,8 +5,9 @@
 #ifndef PBRT_WHITTED_WHITTED_H
 #define PBRT_WHITTED_WHITTED_H
 
-#include <core/integrator.h>
-#include <core/memory.h>
+#include "main.h"
+#include "integrator.h"
+#include "scene.h"
 
 namespace pbrt {
     class WhittedIntegrator : public SamplerIntegrator {

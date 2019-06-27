@@ -5,9 +5,10 @@
 #ifndef PBRT_WHITTED_INTERACTION_H
 #define PBRT_WHITTED_INTERACTION_H
 
+#include "main.h"
 #include "geometry.h"
-#include "shape.h"
 #include "memory.h"
+#include "material.h"
 
  namespace pbrt {
      struct Interaction {
@@ -18,7 +19,7 @@
 
          Ray SpawnRay(const Vector3f &d) const {
              Point3f o = OffsetRayOrigin(p, pError, n, d);
-             return Ray(o, d, Infinity,);
+             return Ray(o, d, Infinity);
          }
          Point3f p;
          Vector3f wo;
@@ -51,6 +52,7 @@
              Vector3f dpdu, dpdv;
              Normal3f dndu, dndv;
          } shading;
+         BSDF *bsdf = nullptr;
          const Primitive *primitive = nullptr;
 
      };

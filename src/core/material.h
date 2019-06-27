@@ -5,7 +5,7 @@
 #ifndef PBRT_WHITTED_MATERIAL_H
 #define PBRT_WHITTED_MATERIAL_H
 
-#include "interaction.h"
+#include "main.h"
 
 namespace pbrt{
     enum class TransportMode { Radiance, Importance };

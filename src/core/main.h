@@ -24,6 +24,7 @@ namespace pbrt{
     template <typename T>
     class Normal3;
 
+    class SurfaceInteraction;
     class RGBSpectrum;
     typedef RGBSpectrum Spectrum;
     struct CameraSample;
@@ -33,6 +34,8 @@ namespace pbrt{
     class Sphere;
     class BxDF;
     class Shape;
+    class MemoryArena;
+
     struct Options {
         Options() {
             cropWindow[0][0] = 0;

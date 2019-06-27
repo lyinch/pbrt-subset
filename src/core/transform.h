@@ -47,6 +47,8 @@ namespace pbrt{
             friend Transform Inverse(const Transform &t) {
                 return Transform(t.mInv, t.m);
             }
+            template <typename T>
+            inline Vector3<T> operator()(const Vector3<T> &v) const;
             Transform operator*(const Transform &t2) const;
 
         private:
@@ -55,8 +57,17 @@ namespace pbrt{
     };
 
     Transform Translate(const Vector3f &delta);
-
+    Transform Scale(float x, float y, float z);
     Transform LookAt(const Point3f &pos, const Point3f &look, const Vector3f &up);
+    Transform Orthographic(float znear, float zfar);
 
+
+    template <typename T>
+    inline Vector3<T> Transform::operator()(const Vector3<T> &v) const {
+        T x = v.x, y = v.y, z = v.z;
+        return Vector3<T>(m.m[0][0] * x + m.m[0][1] * y + m.m[0][2] * z,
+                          m.m[1][0] * x + m.m[1][1] * y + m.m[1][2] * z,
+                          m.m[2][0] * x + m.m[2][1] * y + m.m[2][2] * z);
+    }
 }
 #endif //PBRT_WHITTED_TRANSFORM_H

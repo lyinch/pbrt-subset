@@ -3,3 +3,10 @@
 //
 
 #include "camera.h"
+
+namespace pbrt {
+    Camera::~Camera() {
+        delete film;
+    }
+
+}

@@ -4,10 +4,9 @@
 
 #ifndef PBRT_WHITTED_SHAPE_H
 #define PBRT_WHITTED_SHAPE_H
-
+#include "main.h"
 #include "transform.h"
 #include "geometry.h"
-#include "main.h"
 #include "interaction.h"
 
 namespace pbrt{

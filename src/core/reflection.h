@@ -8,6 +8,7 @@
 #include "main.h"
 #include "geometry.h"
 #include "spectrum.h"
+#include "interaction.h"
 
 namespace pbrt{
 
@@ -19,6 +20,45 @@ namespace pbrt{
         BSDF_SPECULAR = 1 << 4,
         BSDF_ALL = BSDF_DIFFUSE | BSDF_GLOSSY | BSDF_SPECULAR | BSDF_REFLECTION |
                    BSDF_TRANSMISSION,
+    };
+
+    class BSDF {
+    public:
+        BSDF(const SurfaceInteraction &si, float eta = 1)
+                : eta(eta),
+                  ns(si.shading.n),
+                  ng(si.n),
+                  ss(Normalize(si.shading.dpdu)),
+                  ts(Cross(ns, ss)) {}
+
+        void Add(BxDF *b) {
+            bxdfs[nBxDFs++] = b;
+        }
+
+        Vector3f WorldToLocal(const Vector3f &v) const {
+            return Vector3f(Dot(v, ss), Dot(v, ts), Dot(v, ns));
+        }
+        Vector3f LocalToWorld(const Vector3f &v) const {
+            return Vector3f(ss.x * v.x + ts.x * v.y + ns.x * v.z,
+                            ss.y * v.x + ts.y * v.y + ns.y * v.z,
+                            ss.z * v.x + ts.z * v.y + ns.z * v.z);
+        }
+
+        Spectrum f(const Vector3f &woW, const Vector3f &wiW,
+                   BxDFType flags = BSDF_ALL) const;
+
+        const float eta;
+    private:
+        // BSDF Private Methods
+        ~BSDF() {}
+
+        // BSDF Private Data
+        const Normal3f ns, ng;
+        const Vector3f ss, ts;
+        int nBxDFs = 0;
+        static constexpr int MaxBxDFs = 8;
+        BxDF *bxdfs[MaxBxDFs];
+        friend class MixMaterial;
     };
 
     class BxDF {

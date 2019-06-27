@@ -31,6 +31,7 @@ namespace pbrt{
     class VisibilityTester;
     class Scene;
     class Sphere;
+    class BxDF;
     class Shape;
     struct Options {
         Options() {

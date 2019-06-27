@@ -15,6 +15,7 @@
 #include "transform.h"
 #include "film.h"
 #include "light.h"
+#include "primitive.h"
 
 namespace pbrt {
     Options PbrtOptions;
@@ -64,6 +65,9 @@ namespace pbrt {
     static TransformSet curTransform;
     static uint32_t activeTransformBits = AllTransformsBits;
     static std::map<std::string, TransformSet> namedCoordinateSystems;
+    static std::vector<GraphicsState> pushedGraphicsStates;
+    static std::vector<TransformSet> pushedTransforms;
+    static std::vector<uint32_t> pushedActiveTransformBits;
 
 #define FOR_ACTIVE_TRANSFORMS(expr)           \
     for (int i = 0; i < MaxTransforms; ++i)   \
@@ -128,7 +132,17 @@ namespace pbrt {
 
     void pbrtShape(const std::string &name) {
         std::vector<std::shared_ptr<Primitive>> prims;
-
+        Transform *ObjToWorld = transformCache.Lookup(curTransform[0]);
+        Transform *WorldToObj = transformCache.Lookup(Inverse(curTransform[0]));
+        std::vector<std::shared_ptr<Shape>> shapes =
+                MakeShapes(name, ObjToWorld, WorldToObj,
+                           graphicsState.reverseOrientation, params);
+        if (shapes.empty()) return;
+        std::shared_ptr<Material> mtl = graphicsState.GetMaterialForShape(params);
+        prims.reserve(shapes.size());
+        for (auto s : shapes) {
+            prims.push_back(std::make_shared<GeometricPrimitive>(s, mtl, area));
+        }
     }
 
     void pbrtTranslate(float dx, float dy, float dz) {

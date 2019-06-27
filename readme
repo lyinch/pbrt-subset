@@ -5,6 +5,8 @@ Subset of the PBRT sourcecode which only implements:
 - Point light
 - Box filter
 - Orthographic Camera
+- Lambertian reflection and Matte material (diffuse surface)
+
 
 
 

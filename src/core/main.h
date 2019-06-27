@@ -47,6 +47,7 @@ namespace pbrt{
     // constants
     static constexpr float Infinity = std::numeric_limits<float>::infinity();
     static constexpr float Pi = 3.14159265358979323846;
+    static constexpr float InvPi = 0.31830988618379067154;
 
 
     template <typename T, typename U, typename V>

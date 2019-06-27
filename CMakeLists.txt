@@ -21,6 +21,7 @@ SET ( CORE_SOURCE
         src/core/memory.cpp
         src/core/light.cpp
         src/core/primitive.cpp
+        src/core/reflection.cpp
         )
 
 
@@ -43,6 +44,7 @@ SET ( CORE_HEADERS
         src/core/memory.h
         src/core/light.h
         src/core/primitive.h
+        src/core/reflection.h
         )
 
 FILE ( GLOB SOURCE

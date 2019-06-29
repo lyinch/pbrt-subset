@@ -11,7 +11,7 @@ namespace pbrt{
     class Sphere : public Shape {
     public:
         Sphere(const Transform *ObjectToWorld, const Transform *WorldToObject,
-               bool reverseOrientation, float radius, float zMin, float zMax,
+               float radius, float zMin, float zMax,
                float phiMax):Shape(ObjectToWorld, WorldToObject),
                              radius(radius),
                              zMin(Clamp(std::min(zMin, zMax), -radius, radius)),
@@ -30,5 +30,7 @@ namespace pbrt{
         const float thetaMin, thetaMax, phiMax;
 
     };
+    std::shared_ptr<Shape> CreateSphereShape(const Transform *o2w,
+                                             const Transform *w2o);
     }
 #endif //PBRT_WHITTED_SPHERE_H

@@ -85,4 +85,9 @@ namespace pbrt{
         *tHit = thit;
         return true;
     }
+
+    std::shared_ptr<Shape> CreateSphereShape(const Transform *o2w, const Transform *w2o) {
+        return std::make_shared<Sphere>(o2w, w2o, 0.3f, -0.3f,
+                                        0.3f, 360.f);
+    }
 }

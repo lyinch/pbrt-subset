@@ -16,6 +16,7 @@
 #include "film.h"
 #include "light.h"
 #include "primitive.h"
+#include "texture.h"
 
 namespace pbrt {
     Options PbrtOptions;
@@ -55,9 +56,135 @@ namespace pbrt {
 
     };
 
+    struct MaterialInstance {
+        MaterialInstance() = default;
+        MaterialInstance(const std::string &name, const std::shared_ptr<Material> &mtl)
+                : name(name), material(mtl) {}
+
+        std::string name;
+        std::shared_ptr<Material> material;
+    };
+
     struct GraphicsState {
+        GraphicsState()
+                : floatTextures(std::make_shared<FloatTextureMap>()),
+                  spectrumTextures(std::make_shared<SpectrumTextureMap>()),
+                  namedMaterials(std::make_shared<NamedMaterialMap>()) {
+            currentMaterial = std::make_shared<MaterialInstance>("matte");
+
+        }
+
+        std::shared_ptr<Material> GetMaterialForShape();
+
+        using FloatTextureMap = std::map<std::string, std::shared_ptr<Texture<float>>>;
+        std::shared_ptr<FloatTextureMap> floatTextures;
+        bool floatTexturesShared = false;
+
+        using SpectrumTextureMap = std::map<std::string, std::shared_ptr<Texture<Spectrum>>>;
+        std::shared_ptr<SpectrumTextureMap> spectrumTextures;
+        bool spectrumTexturesShared = false;
+
+        using NamedMaterialMap = std::map<std::string, std::shared_ptr<MaterialInstance>>;
+        std::shared_ptr<NamedMaterialMap> namedMaterials;
+        bool namedMaterialsShared = false;
+
+        std::shared_ptr<MaterialInstance> currentMaterial;
 
     };
+
+    std::shared_ptr<Material> GraphicsState::GetMaterialForShape(){
+        return currentMaterial->material;
+    }
+
+            class TransformCache{
+    public:
+        TransformCache()
+                : hashTable(512), hashTableOccupancy(0) {}
+
+        Transform *Lookup(const Transform &t) {
+
+            int offset = Hash(t) & (hashTable.size() - 1);
+            int step = 1;
+            while (true) {
+                // Keep looking until we find the Transform or determine that
+                // it's not present.
+                if (!hashTable[offset] || *hashTable[offset] == t)
+                    break;
+                // Advance using quadratic probing.
+                offset = (offset + step * step) & (hashTable.size() - 1);
+                ++step;
+            }
+            Transform *tCached = hashTable[offset];
+            if (tCached){}
+            else {
+                tCached = arena.Alloc<Transform>();
+                *tCached = t;
+                Insert(tCached);
+            }
+            return tCached;
+        }
+
+    private:
+        void Insert(Transform *tNew);
+        void Grow();
+
+        static uint64_t Hash(const Transform &t) {
+            const char *ptr = (const char *)(&t.GetMatrix());
+            size_t size = sizeof(Matrix4x4);
+            uint64_t hash = 14695981039346656037ull;
+            while (size > 0) {
+                hash ^= *ptr;
+                hash *= 1099511628211ull;
+                ++ptr;
+                --size;
+            }
+            return hash;
+        }
+
+        std::vector<Transform *> hashTable;
+        int hashTableOccupancy;
+        MemoryArena arena;
+    };
+
+    void TransformCache::Insert(Transform *tNew) {
+        if (++hashTableOccupancy == hashTable.size() / 2)
+            Grow();
+
+        int offset = Hash(*tNew) & (hashTable.size() - 1);
+        int step = 1;
+        while (true) {
+            if (hashTable[offset] == nullptr) {
+                hashTable[offset] = tNew;
+                return;
+            }
+            // Advance using quadratic probing.
+            offset = (offset + step * step) & (hashTable.size() - 1);
+            ++step;
+        }
+    }
+
+    void TransformCache::Grow() {
+        std::vector<Transform *> newTable(2 * hashTable.size());
+
+        // Insert current elements into newTable.
+        for (Transform *tEntry : hashTable) {
+            if (!tEntry) continue;
+
+            int offset = Hash(*tEntry) & (newTable.size() - 1);
+            int step = 1;
+            while (true) {
+                if (newTable[offset] == nullptr) {
+                    newTable[offset] = tEntry;
+                    break;
+                }
+                // Advance using quadratic probing.
+                offset = (offset + step * step) & (hashTable.size() - 1);
+                ++step;
+            }
+        }
+
+        std::swap(hashTable, newTable);
+    }
 
     // API Static Data
     static GraphicsState graphicsState;
@@ -68,12 +195,24 @@ namespace pbrt {
     static std::vector<GraphicsState> pushedGraphicsStates;
     static std::vector<TransformSet> pushedTransforms;
     static std::vector<uint32_t> pushedActiveTransformBits;
+    static TransformCache transformCache;
 
 #define FOR_ACTIVE_TRANSFORMS(expr)           \
     for (int i = 0; i < MaxTransforms; ++i)   \
         if (activeTransformBits & (1 << i)) { \
             expr                              \
         }
+
+
+    std::vector<std::shared_ptr<Shape>> MakeShapes(const std::string &name,
+                                                   const Transform *object2world,
+                                                   const Transform *world2object){
+        std::vector<std::shared_ptr<Shape>> shapes;
+        std::shared_ptr<Shape> s;
+        if (name == "sphere")
+            s = CreateSphereShape(object2world, world2object);
+        return shapes;
+    }
 
     void pbrtLookAt(float ex, float ey, float ez, float lx, float ly, float lz,
                     float ux, float uy, float uz) {
@@ -135,13 +274,12 @@ namespace pbrt {
         Transform *ObjToWorld = transformCache.Lookup(curTransform[0]);
         Transform *WorldToObj = transformCache.Lookup(Inverse(curTransform[0]));
         std::vector<std::shared_ptr<Shape>> shapes =
-                MakeShapes(name, ObjToWorld, WorldToObj,
-                           graphicsState.reverseOrientation, params);
+                MakeShapes(name, ObjToWorld, WorldToObj);
         if (shapes.empty()) return;
-        std::shared_ptr<Material> mtl = graphicsState.GetMaterialForShape(params);
+        std::shared_ptr<Material> mtl = graphicsState.GetMaterialForShape();
         prims.reserve(shapes.size());
         for (auto s : shapes) {
-            prims.push_back(std::make_shared<GeometricPrimitive>(s, mtl, area));
+            prims.push_back(std::make_shared<GeometricPrimitive>(s, mtl));
         }
     }
 

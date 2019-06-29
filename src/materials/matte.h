@@ -12,7 +12,7 @@ namespace pbrt{
     class MatteMaterial : public Material {
     public:
         MatteMaterial(const std::shared_ptr<Texture<Spectrum>> &Kd,
-                        const std::shared_ptr<Texture<Float>> &sigma)
+                        const std::shared_ptr<Texture<float>> &sigma)
         : Kd(Kd), sigma(sigma) {}
 
         void ComputeScatteringFunctions(SurfaceInteraction *si, MemoryArena &arena,

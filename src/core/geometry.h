@@ -133,7 +133,15 @@ namespace pbrt {
     typedef Point3<float> Point3f;
     typedef Point3<int> Point3i;
 
-
+    template <typename T>
+    Point2<T> Min(const Point2<T> &pa, const Point2<T> &pb) {
+        return Point2<T>(std::min(pa.x, pb.x), std::min(pa.y, pb.y));
+    }
+    
+    template <typename T>
+    Point2<T> Max(const Point2<T> &pa, const Point2<T> &pb) {
+        return Point2<T>(std::max(pa.x, pb.x), std::max(pa.y, pb.y));
+    }
 
     template <typename T>
     class Normal3 {
@@ -209,6 +217,27 @@ namespace pbrt {
 
     template <typename T>
     class Bounds2 {
+        public:
+        Bounds2() {
+            T minNum = std::numeric_limits<T>::lowest();
+            T maxNum = std::numeric_limits<T>::max();
+            pMin = Point2<T>(maxNum, maxNum);
+            pMax = Point2<T>(minNum, minNum);
+        }
+        explicit Bounds2(const Point2<T> &p) : pMin(p), pMax(p) {}
+        Bounds2(const Point2<T> &p1, const Point2<T> &p2) {
+            pMin = Point2<T>(std::min(p1.x, p2.x), std::min(p1.y, p2.y));
+            pMax = Point2<T>(std::max(p1.x, p2.x), std::max(p1.y, p2.y));
+        }
+
+        template <typename U>
+        explicit operator Bounds2<U>() const {
+            return Bounds2<U>((Point2<U>)pMin, (Point2<U>)pMax);
+        }
+
+
+        Point2<T> pMin, pMax;
+
 
     };
 

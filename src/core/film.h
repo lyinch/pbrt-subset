@@ -7,6 +7,7 @@
 #include "geometry.h"
 #include "filter.h"
 #include "main.h"
+#include "spectrum.h"
 #include <vector>
 
 namespace pbrt{
@@ -59,7 +60,7 @@ namespace pbrt{
         }
 
         void AddSample(const Point2f &pFilm, Spectrum L,
-                       Float sampleWeight = 1.) {
+                       float sampleWeight = 1.) {
 
             Point2f pFilmDiscrete = pFilm - Vector2f(0.5f, 0.5f);
             Point2i p0 = (Point2i)Ceil(pFilmDiscrete - filterRadius);
@@ -70,13 +71,13 @@ namespace pbrt{
 
             int *ifx = ALLOCA(int, p1.x - p0.x);
             for (int x = p0.x; x < p1.x; ++x) {
-                Float fx = std::abs((x - pFilmDiscrete.x) * invFilterRadius.x *
+                float fx = std::abs((x - pFilmDiscrete.x) * invFilterRadius.x *
                                     filterTableSize);
                 ifx[x - p0.x] = std::min((int)std::floor(fx), filterTableSize - 1);
             }
             int *ify = ALLOCA(int, p1.y - p0.y);
             for (int y = p0.y; y < p1.y; ++y) {
-                Float fy = std::abs((y - pFilmDiscrete.y) * invFilterRadius.y *
+                float fy = std::abs((y - pFilmDiscrete.y) * invFilterRadius.y *
                                     filterTableSize);
                 ify[y - p0.y] = std::min((int)std::floor(fy), filterTableSize - 1);
             }

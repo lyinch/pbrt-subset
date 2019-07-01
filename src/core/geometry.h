@@ -86,6 +86,7 @@ namespace pbrt {
     class Point2 {
     public:
         Point2() { x = y = 0; }
+        Point2(T xx, T yy) : x(xx), y(yy) {}
 
         explicit Point2(const Point3<T> &p) : x(p.x), y(p.y) {}
 
@@ -101,6 +102,18 @@ namespace pbrt {
             y = (T) v.y;
         }
 
+
+        Point2<T> operator-(const Vector2<T> &v) const {
+            return Point2<T>(x - v.x, y - v.y);
+        }
+
+        Point2<T> operator+(const Vector2<T> &v) const {
+            return Point2<T>(x + v.x, y + v.y);
+        }
+
+        Point2<T> operator+(const Point2<T> &p) const {
+            return Point2<T>(x + p.x, y + p.y);
+        }
 
         T x, y;
 
@@ -137,10 +150,20 @@ namespace pbrt {
     Point2<T> Min(const Point2<T> &pa, const Point2<T> &pb) {
         return Point2<T>(std::min(pa.x, pb.x), std::min(pa.y, pb.y));
     }
-    
+
     template <typename T>
     Point2<T> Max(const Point2<T> &pa, const Point2<T> &pb) {
         return Point2<T>(std::max(pa.x, pb.x), std::max(pa.y, pb.y));
+    }
+
+    template <typename T>
+    Point2<T> Floor(const Point2<T> &p) {
+        return Point2<T>(std::floor(p.x), std::floor(p.y));
+    }
+
+    template <typename T>
+    Point2<T> Ceil(const Point2<T> &p) {
+        return Point2<T>(std::ceil(p.x), std::ceil(p.y));
     }
 
     template <typename T>
@@ -228,6 +251,11 @@ namespace pbrt {
         Bounds2(const Point2<T> &p1, const Point2<T> &p2) {
             pMin = Point2<T>(std::min(p1.x, p2.x), std::min(p1.y, p2.y));
             pMax = Point2<T>(std::max(p1.x, p2.x), std::max(p1.y, p2.y));
+        }
+
+        T Area() const {
+            Vector2<T> d = pMax - pMin;
+            return (d.x * d.y);
         }
 
         template <typename U>

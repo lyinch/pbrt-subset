@@ -5,10 +5,11 @@
 #ifndef PBRT_WHITTED_SCENE_H
 #define PBRT_WHITTED_SCENE_H
 
-
-#include <memory>
-#include "light.h"
 #include "main.h"
+#include "geometry.h"
+#include "primitive.h"
+#include "light.h"
+
 namespace pbrt{
     class Scene{
 
@@ -27,7 +28,6 @@ namespace pbrt{
     private:
         std::shared_ptr<Primitive> aggregate;
         Bounds3f worldBound; //Bounding box of scene
-
 
     };
 }

@@ -5,10 +5,10 @@
 #ifndef PBRT_WHITTED_LIGHT_H
 #define PBRT_WHITTED_LIGHT_H
 
+#include "main.h"
 #include "transform.h"
 #include "geometry.h"
 #include "interaction.h"
-#include "main.h"
 #include "sampler.h"
 
 namespace pbrt{

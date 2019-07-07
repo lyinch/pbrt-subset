@@ -6,6 +6,7 @@
 #define PBRT_WHITTED_RANDOM_H
 
 #include <core/sampler.h>
+#include "rng.h"
 #include <memory>
 
 namespace pbrt{

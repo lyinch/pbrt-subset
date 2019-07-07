@@ -5,9 +5,9 @@
 #ifndef PBRT_WHITTED_MATTE_H
 #define PBRT_WHITTED_MATTE_H
 
-#include <core/material.h>
-#include <core/spectrum.h>
-#include "reflection.h"
+#include "main.h"
+#include "material.h"
+
 namespace pbrt{
     class MatteMaterial : public Material {
     public:

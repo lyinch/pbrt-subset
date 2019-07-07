@@ -7,6 +7,7 @@
 
 #include "main.h"
 #include "geometry.h"
+#include "transform.h"
 #include "memory.h"
 #include "material.h"
 
@@ -18,7 +19,7 @@
                  p(p), wo(wo), n(n) {}
 
          Ray SpawnRay(const Vector3f &d) const {
-             Point3f o = OffsetRayOrigin(p, pError, n, d);
+             Point3f o = OffsetRayOrigin(p, n, d);
              return Ray(o, d, Infinity);
          }
          Point3f p;

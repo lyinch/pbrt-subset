@@ -9,9 +9,10 @@
 
 namespace pbrt{
     class OrthographicCamera: public ProjectiveCamera{
+    public:
         OrthographicCamera(const Transform &CameraToWorld,
                            const Bounds2f &screenWindow,
-                           float focalDistance, Film *film)
+                           Film *film)
                 : ProjectiveCamera(CameraToWorld, Orthographic(0, 1), screenWindow,
                                    film) {
             dxCamera = RasterToCamera(Vector3f(1, 0, 0));
@@ -23,6 +24,8 @@ namespace pbrt{
     private:
         Vector3f dxCamera, dyCamera;
     };
+
+    OrthographicCamera *CreateOrthographicCamera(const Transform &cam2world, Film *film);
 }
 
 #endif //PBRT_WHITTED_ORTHOGRAPHIC_H

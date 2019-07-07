@@ -14,4 +14,22 @@ namespace pbrt {
         return 1;
     }
 
+    OrthographicCamera *CreateOrthographicCamera(const Transform &cam2world, Film *film) {
+        float frame = float(film->fullResolution.x)/float(film->fullResolution.y);
+
+        Bounds2f screen;
+        if (frame > 1.f) {
+            screen.pMin.x = -frame;
+            screen.pMax.x = frame;
+            screen.pMin.y = -1.f;
+            screen.pMax.y = 1.f;
+        } else {
+            screen.pMin.x = -1.f;
+            screen.pMax.x = 1.f;
+            screen.pMin.y = -1.f / frame;
+            screen.pMax.y = 1.f / frame;
+        }
+
+        return new OrthographicCamera(cam2world,screen,film);
+    }
 }

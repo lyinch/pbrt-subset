@@ -49,7 +49,7 @@ SET ( CORE_HEADERS
         src/core/reflection.h
         src/core/material.h
         src/core/texture.h
-        )
+        src/core/rng.h src/core/parallel.h)
 
 FILE ( GLOB SOURCE
         src/filters/*.cpp

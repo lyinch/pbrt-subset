@@ -39,6 +39,8 @@ namespace pbrt {
             return y;
         }
 
+        float LengthSquared() const { return x * x + y * y; }
+        float Length() const { return std::sqrt(LengthSquared()); }
 
         T x, y;
     };
@@ -67,12 +69,19 @@ namespace pbrt {
             return Vector3<T>(f * x, f * y, f * z);
         }
 
+        Vector3<T> operator-() const { return Vector3<T>(-x, -y, -z); }
+
         T operator[](int i) const {
             assert(i >= 0 && i <= 2);
             if (i == 0) return x;
             if (i == 1) return y;
             return z;
         }
+
+        explicit Vector3(const Normal3<T> &n);
+
+        float LengthSquared() const { return x * x + y * y+z*z; }
+        float Length() const { return std::sqrt(LengthSquared()); }
 
         T x, y, z;
     };
@@ -81,6 +90,26 @@ namespace pbrt {
     typedef Vector2<int> Vector2i;
     typedef Vector3<float> Vector3f;
     typedef Vector3<int> Vector3i;
+
+    template <typename T>
+    inline Vector3<T>::Vector3(const Normal3<T> &n)
+            : x(n.x), y(n.y), z(n.z) {
+    }
+
+    template <typename T, typename U>
+    inline Vector3<T> operator*(U s, const Vector3<T> &v) {
+        return v * s;
+    }
+    template <typename T>
+    Vector3<T> Abs(const Vector3<T> &v) {
+        return Vector3<T>(std::abs(v.x), std::abs(v.y), std::abs(v.z));
+    }
+
+    template <typename T>
+    inline T Dot(const Vector3<T> &v1, const Vector3<T> &v2) {
+        return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+    }
+
 
     template<typename T>
     class Point2 {
@@ -114,6 +143,9 @@ namespace pbrt {
         Point2<T> operator+(const Point2<T> &p) const {
             return Point2<T>(x + p.x, y + p.y);
         }
+        Vector2<T> operator-(const Point2<T> &p) const {
+            return Vector2<T>(x - p.x, y - p.y);
+        }
 
         T x, y;
 
@@ -139,6 +171,26 @@ namespace pbrt {
         Vector3<T> operator-(const Point3<T> &p) const {
             return Vector3<T>(x - p.x, y - p.y, z - p.z);
         }
+
+        template <typename U>
+        Point3<T> operator/(U f) const {
+            float inv = (float)1 / f;
+            return Point3<T>(inv * x, inv * y, inv * z);
+        }
+
+        T operator[](int i) const {
+            if (i == 0) return x;
+            if (i == 1) return y;
+            return z;
+        }
+
+        T &operator[](int i) {
+            assert(i >= 0 && i <= 2);
+            if (i == 0) return x;
+            if (i == 1) return y;
+            return z;
+        }
+
     };
 
     typedef Point2<float> Point2f;
@@ -172,11 +224,28 @@ namespace pbrt {
         Normal3() { x = y = z = 0; }
         Normal3(T xx, T yy, T zz) : x(xx), y(yy), z(zz) { }
 
+        explicit Normal3<T>(const Vector3<T> &v) : x(v.x), y(v.y), z(v.z) {
+        }
         T x, y, z;
 
     };
 
     typedef Normal3<float> Normal3f;
+
+    template <typename T>
+    inline T Dot(const Vector3<T> &v1, const Normal3<T> &n2) {
+        return v1.x * n2.x + v1.y * n2.y + v1.z * n2.z;
+    }
+
+    template <typename T>
+    inline T Dot(const Normal3<T> &n1, const Vector3<T> &v2) {
+        return n1.x * v2.x + n1.y * v2.y + n1.z * v2.z;
+    }
+
+    template <typename T>
+    Normal3<T> Abs(const Normal3<T> &v) {
+        return Normal3<T>(std::abs(v.x), std::abs(v.y), std::abs(v.z));
+    }
 
     template <typename T>
     inline Vector3<T> Cross(const Vector3<T> &v1, const Vector3<T> &v2) {
@@ -279,6 +348,35 @@ namespace pbrt {
     typedef Bounds3<float> Bounds3f;
     typedef Bounds3<int> Bounds3i;
 
+
+    template <typename T>
+    Bounds2<T> Intersect(const Bounds2<T> &b1, const Bounds2<T> &b2) {
+        // Important: assign to pMin/pMax directly and don't run the Bounds2()
+        // constructor, since it takes min/max of the points passed to it.  In
+        // turn, that breaks returning an invalid bound for the case where we
+        // intersect non-overlapping bounds (as we'd like to happen).
+        Bounds2<T> ret;
+        ret.pMin = Max(b1.pMin, b2.pMin);
+        ret.pMax = Min(b1.pMax, b2.pMax);
+        return ret;
+    }
+
+    inline Point3f OffsetRayOrigin(const Point3f &p, const Normal3f &n, const Vector3f &w) {
+        Vector3f pError = Vector3f(1,1,1);
+        float d = Dot(Abs(n),pError);
+
+        Vector3f offset = d * Vector3f(n);
+        if (Dot(w, n) < 0) offset = -offset;
+        Point3f po = p + offset;
+        // Round offset point _po_ away from _p_
+        for (int i = 0; i < 3; ++i) {
+            if (offset[i] > 0)
+                po[i] = NextFloatUp(po[i]);
+            else if (offset[i] < 0)
+                po[i] = NextFloatDown(po[i]);
+        }
+        return po;
+    }
 
 }
 #endif //PBRT_WHITTED_GEOMETRY_H

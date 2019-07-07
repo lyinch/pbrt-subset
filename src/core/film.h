@@ -4,11 +4,12 @@
 
 #ifndef PBRT_WHITTED_FILM_H
 #define PBRT_WHITTED_FILM_H
+
+#include "main.h"
 #include "geometry.h"
 #include "filter.h"
-#include "main.h"
 #include "spectrum.h"
-#include <vector>
+#include "parallel.h"
 
 namespace pbrt{
     struct FilmTilePixel {
@@ -19,22 +20,19 @@ namespace pbrt{
     class Film{
     public:
         Film(const Point2i &resolution,const Bounds2f &cropWindow,
-             std::unique_ptr<Filter> filter, float diagonal,
-             const std::string &filename, float scale,
-             float maxSampleLuminance = Infinity);
+             std::unique_ptr<Filter> filter,
+             const std::string &filename, float scale);
         Bounds2i GetSampleBounds() const;
         std::unique_ptr<FilmTile> GetFilmTile(const Bounds2i &sampleBounds);
         void MergeFilmTile(std::unique_ptr<FilmTile> tile);
 
         const Point2i fullResolution;
-        const float diagonal;
         std::unique_ptr<Filter> filter;
         const std::string filename;
         Bounds2i croppedPixelBounds;
 
     private:
         const float scale;
-        const float maxSampleLuminance;
         struct Pixel {
             Pixel() { xyz[0] = xyz[1] = xyz[2] = filterWeightSum = 0; }
             float xyz[3];
@@ -110,6 +108,9 @@ namespace pbrt{
             return pixels[offset];
         }
 
+        Bounds2i GetPixelBounds() const { return pixelBounds; }
+
+
     private:
         const Bounds2i pixelBounds;
         const Vector2f filterRadius, invFilterRadius;
@@ -118,5 +119,8 @@ namespace pbrt{
         std::vector<FilmTilePixel> pixels;
         friend class Film;
     };
+
+    Film *CreateFilm(std::unique_ptr<Filter> filter);
+
 }
 #endif //PBRT_WHITTED_FILM_H

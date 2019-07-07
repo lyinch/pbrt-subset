@@ -9,14 +9,12 @@
 
 namespace pbrt{
 
-    Film::Film(const Point2i &resolution, const Bounds2f &cropWindow, std::unique_ptr<Filter> filter, float diagonal,
-               const std::string &filename, float scale, float maxSampleLuminance):
+    Film::Film(const Point2i &resolution, const Bounds2f &cropWindow, std::unique_ptr<Filter> filter,
+               const std::string &filename, float scale):
             fullResolution(resolution),
-            diagonal(diagonal * .001),
             filter(std::move(filter)),
             filename(filename),
-            scale(scale),
-            maxSampleLuminance(maxSampleLuminance) {
+            scale(scale){
         croppedPixelBounds =
                 Bounds2i(Point2i(std::ceil(fullResolution.x * cropWindow.pMin.x),
                                  std::ceil(fullResolution.y * cropWindow.pMin.y)),
@@ -52,8 +50,7 @@ namespace pbrt{
                      Point2i(1, 1);
         Bounds2i tilePixelBounds = Intersect(Bounds2i(p0, p1), croppedPixelBounds);
         return std::unique_ptr<FilmTile>(new FilmTile(
-                tilePixelBounds, filter->radius, filterTable, filterTableWidth,
-                maxSampleLuminance));
+                tilePixelBounds, filter->radius, filterTable, filterTableWidth));
     }
 
     void Film::MergeFilmTile(std::unique_ptr<FilmTile> tile) {
@@ -67,5 +64,18 @@ namespace pbrt{
             for (int i = 0; i < 3; ++i) mergePixel.xyz[i] += xyz[i];
             mergePixel.filterWeightSum += tilePixel.filterWeightSum;
         }
+    }
+
+    Film *CreateFilm(std::unique_ptr<Filter> filter) {
+        std::string filename;
+        filename = PbrtOptions.imageFile;
+        int xres = 1024;
+        int yres = 768;
+        Bounds2f crop;
+        crop = Bounds2f(Point2f(Clamp(PbrtOptions.cropWindow[0][0], 0, 1),
+                                Clamp(PbrtOptions.cropWindow[1][0], 0, 1)),
+                        Point2f(Clamp(PbrtOptions.cropWindow[0][1], 0, 1),
+                                Clamp(PbrtOptions.cropWindow[1][1], 0, 1)));
+        return new Film(Point2i(xres,yres),crop,std::move(filter),filename,1);
     }
 }

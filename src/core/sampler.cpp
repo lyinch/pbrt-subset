@@ -3,6 +3,7 @@
 //
 
 #include "sampler.h"
+#include "camera.h"
 
 
 namespace pbrt{
@@ -12,7 +13,7 @@ namespace pbrt{
 
     CameraSample Sampler::GetCameraSample(const Point2i &pRaster) {
         CameraSample cs;
-        cs.pFiln = (Point2f)pRaster + Get2D();
+        cs.pFilm = (Point2f)pRaster + Get2D();
         return cs;
     }
 

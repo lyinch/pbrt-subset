@@ -11,8 +11,16 @@
 #include <vector>
 #include <cmath>
 
+#include <alloca.h>
+
 namespace pbrt{
-    // Forward declarations
+
+#define ALLOCA(TYPE, COUNT) (TYPE *) alloca((COUNT) * sizeof(TYPE))
+
+   // Forward declarations
+   class Scene;
+   class Integrator;
+   class SamplerIntegrator;
     template <typename T>
     class Vector2;
     template <typename T>
@@ -23,17 +31,32 @@ namespace pbrt{
     class Point2;
     template <typename T>
     class Normal3;
-
+    class Ray;
+    template <typename T>
+    class Bounds2;
+    template <typename T>
+    class Bounds3;
+    class Transform;
+    struct Interaction;
     class SurfaceInteraction;
+    class Shape;
+    class Primitive;
+    class GeometricPrimitive;
     class RGBSpectrum;
     typedef RGBSpectrum Spectrum;
+    class Camera;
     struct CameraSample;
+    class Sampler;
+    class Filter;
+    class Film;
     class FilmTile;
-    class VisibilityTester;
-    class Scene;
-    class Sphere;
     class BxDF;
-    class Shape;
+    class BSDF;
+    template <typename T>
+    class Texture;
+    class Light;
+    class VisibilityTester;
+
     class MemoryArena;
 
     struct Options {
@@ -48,11 +71,63 @@ namespace pbrt{
         float cropWindow[2][2];
     };
 
+    extern Options PbrtOptions;
+
+
     // constants
     static constexpr float Infinity = std::numeric_limits<float>::infinity();
     static constexpr float Pi = 3.14159265358979323846;
     static constexpr float InvPi = 0.31830988618379067154;
 
+    inline uint32_t FloatToBits(float f) {
+        uint32_t ui;
+        memcpy(&ui, &f, sizeof(float));
+        return ui;
+    }
+
+    inline float BitsToFloat(uint32_t ui) {
+        float f;
+        memcpy(&f, &ui, sizeof(uint32_t));
+        return f;
+    }
+
+    inline uint64_t FloatToBits(double f) {
+        uint64_t ui;
+        memcpy(&ui, &f, sizeof(double));
+        return ui;
+    }
+
+    inline double BitsToFloat(uint64_t ui) {
+        double f;
+        memcpy(&f, &ui, sizeof(uint64_t));
+        return f;
+    }
+
+    inline float NextFloatUp(float v) {
+        // Handle infinity and negative zero for _NextFloatUp()_
+        if (std::isinf(v) && v > 0.) return v;
+        if (v == -0.f) v = 0.f;
+
+        // Advance _v_ to next higher float
+        uint32_t ui = FloatToBits(v);
+        if (v >= 0)
+            ++ui;
+        else
+            --ui;
+        return BitsToFloat(ui);
+    }
+
+    inline float NextFloatDown(float v) {
+        // Handle infinity and positive zero for _NextFloatDown()_
+        if (std::isinf(v) && v < 0.) return v;
+        if (v == 0.f) v = -0.f;
+        uint32_t ui = FloatToBits(v);
+        if (v > 0)
+            --ui;
+        else
+            ++ui;
+        return BitsToFloat(ui);
+    }
 
     template <typename T, typename U, typename V>
     inline T Clamp(T val, U low, V high) {

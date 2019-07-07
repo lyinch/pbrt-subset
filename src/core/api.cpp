@@ -1,25 +1,27 @@
 //
 // Created by Thierry Backes on 2019-06-19.
 //
-#include <samplers/random.h>
-#include <filters/box.h>
-#include <map>
-#include <integrators/whitted.h>
-#include <lights/point.h>
+
 #include "api.h"
-#include "camera.h"
-#include "scene.h"
-#include "integrator.h"
 #include "spectrum.h"
-#include "filter.h"
-#include "transform.h"
+#include "scene.h"
 #include "film.h"
-#include "light.h"
-#include "primitive.h"
-#include "texture.h"
+
+#include "cameras/orthographic.h"
+#include "filters/box.h"
+#include "integrators/whitted.h"
+#include "lights/point.h"
+#include "materials/matte.h"
+#include "samplers/random.h"
+#include "shapes/sphere.h"
+#include "textures/constant.h"
+
+#include <map>
+
 
 namespace pbrt {
     Options PbrtOptions;
+
     constexpr int MaxTransforms = 2;
     constexpr int AllTransformsBits = (1 << MaxTransforms) - 1;
 
@@ -297,6 +299,16 @@ namespace pbrt {
         return std::shared_ptr<Sampler>(sampler);
 
     }
+    Camera *MakeCamera(const std::string &name, const TransformSet &cam2worldSet, Film *film) {
+        Camera *camera = nullptr;
+        Transform *cam2world[2] = {
+                transformCache.Lookup(cam2worldSet[0]),
+                transformCache.Lookup(cam2worldSet[1])
+        };
+        Transform *c2w = transformCache.Lookup(cam2worldSet[0]);
+        camera = CreateOrthographicCamera(*c2w, film);
+        return camera;
+    }
 
     std::unique_ptr<Filter> MakeFilter(const std::string &name) {
         Filter *filter = nullptr;
@@ -324,7 +336,8 @@ namespace pbrt {
     Camera *RenderOptions::MakeCamera() const {
         std::unique_ptr<Filter> filter = MakeFilter(FilterName);
         Film *film = MakeFilm(FilmName, std::move(filter));
-
+        Camera *camera = pbrt::MakeCamera(CameraName,CameraToWorld,film);
+        return camera;
     }
 
 }

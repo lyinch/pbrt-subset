@@ -29,6 +29,12 @@ namespace pbrt{
                                 m1.m[i][2] * m2.m[2][j] + m1.m[i][3] * m2.m[3][j];
             return r;
         }
+        bool operator==(const Matrix4x4 &m2) const {
+            for (int i = 0; i < 4; ++i)
+                for (int j = 0; j < 4; ++j)
+                    if (m[i][j] != m2.m[i][j]) return false;
+            return true;
+        }
 
         float m[4][4];
     };
@@ -55,7 +61,9 @@ namespace pbrt{
             inline Ray operator()(const Ray &r) const;
 
             Transform operator*(const Transform &t2) const;
-
+            bool operator==(const Transform &t) const {
+                return t.m == m && t.mInv == mInv;
+            }
         private:
             // Transform Private Data
             Matrix4x4 m, mInv;
@@ -94,11 +102,13 @@ namespace pbrt{
         float lengthSquared = d.LengthSquared();
         float tMax = r.tMax;
         if (lengthSquared > 0) {
-            float dt = Dot(Abs(d)) / lengthSquared;
+            Vector3f oError(0,0,0);
+            float dt = Dot(Abs(d),oError) / lengthSquared;
             o += d * dt;
             tMax -= dt;
         }
         return Ray(o, d, tMax);
     }
+
 }
 #endif //PBRT_WHITTED_TRANSFORM_H

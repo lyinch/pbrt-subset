@@ -61,6 +61,7 @@ namespace pbrt{
             template <typename T>
             inline Vector3<T> operator()(const Vector3<T> &v) const;
             inline Ray operator()(const Ray &r) const;
+            Bounds3f operator()(const Bounds3f &b) const;
 
             Transform operator*(const Transform &t2) const;
             bool operator==(const Transform &t) const {

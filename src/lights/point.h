@@ -5,7 +5,9 @@
 #ifndef PBRT_WHITTED_POINT_H
 #define PBRT_WHITTED_POINT_H
 
-#include <core/light.h>
+#include "main.h"
+#include "light.h"
+#include "shape.h"
 
 namespace pbrt{
     class PointLight : public Light {

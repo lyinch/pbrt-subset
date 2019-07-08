@@ -2,7 +2,7 @@
 // Created by Thierry Backes on 2019-06-18.
 //
 
-#include "box.h"
+#include "filters/box.h"
 namespace pbrt {
     float BoxFilter::Evaluate(const Point2f &p) const {
         return 1.;

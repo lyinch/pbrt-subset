@@ -230,6 +230,11 @@ namespace pbrt {
         return Point2<T>(std::ceil(p.x), std::ceil(p.y));
     }
 
+    template <typename T, typename U>
+    inline Point2<T> operator*(U f, const Point2<T> &p) {
+        return p * f;
+    }
+
     template <typename T>
     class Normal3 {
     public:
@@ -238,11 +243,25 @@ namespace pbrt {
 
         explicit Normal3<T>(const Vector3<T> &v) : x(v.x), y(v.y), z(v.z) {
         }
+
+        Normal3<T> operator+(const Normal3<T> &n) const {
+            return Normal3<T>(x + n.x, y + n.y, z + n.z);
+        }
+
+        template <typename U>
+        Normal3<T> operator*(U f) const {
+            return Normal3<T>(f * x, f * y, f * z);
+        }
         T x, y, z;
 
     };
 
     typedef Normal3<float> Normal3f;
+
+    template <typename T, typename U>
+    inline Normal3<T> operator*(U f, const Normal3<T> &n) {
+        return Normal3<T>(f * n.x, f * n.y, f * n.z);
+    }
 
     template <typename T>
     inline T Dot(const Vector3<T> &v1, const Normal3<T> &n2) {

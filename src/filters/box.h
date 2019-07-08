@@ -5,7 +5,7 @@
 #ifndef PBRT_WHITTED_BOX_H
 #define PBRT_WHITTED_BOX_H
 
-#include <core/filter.h>
+#include "filter.h"
 
 namespace pbrt{
     class BoxFilter: public Filter{

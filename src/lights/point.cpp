@@ -2,7 +2,10 @@
 // Created by Thierry Backes on 2019-06-24.
 //
 
-#include "point.h"
+#include "lights/point.h"
+#include "scene.h"
+#include "sampling.h"
+
 namespace pbrt{
 
     Spectrum PointLight::Sample_Li(const Interaction &ref, const Point2f &u, Vector3f *wi, float *pdf,

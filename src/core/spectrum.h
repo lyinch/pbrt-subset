@@ -92,7 +92,6 @@ namespace pbrt {
         CoefficientSpectrum operator/(float a) const {
             CoefficientSpectrum ret = *this;
             for (int i = 0; i < nSpectrumSamples; ++i) ret.c[i] /= a;
-            DCHECK(!ret.HasNaNs());
             return ret;
         }
         CoefficientSpectrum &operator/=(float a) {
@@ -114,12 +113,20 @@ namespace pbrt {
             return true;
         }
 
+        CoefficientSpectrum Clamp(float low = 0, float high = Infinity) const {
+            CoefficientSpectrum ret;
+            for (int i = 0; i < nSpectrumSamples; ++i)
+                ret.c[i] = pbrt::Clamp(c[i], low, high);
+            return ret;
+        }
+
     protected:
         float c[nSpectrumSamples];
     };
 
     class RGBSpectrum : public CoefficientSpectrum<3> {
         using CoefficientSpectrum<3>::c;
+
     public:
         RGBSpectrum(float v = 0.f) : CoefficientSpectrum<3>(v) {}
         RGBSpectrum(const CoefficientSpectrum<3> &v) : CoefficientSpectrum<3>(v) {}
@@ -142,6 +149,7 @@ namespace pbrt {
             rgb[1] = c[1];
             rgb[2] = c[2];
         }
+        const RGBSpectrum &ToRGBSpectrum() const { return *this; }
 
         void ToXYZ(float xyz[3]) const { RGBToXYZ(c, xyz); }
 

@@ -71,6 +71,7 @@ namespace pbrt{
             cropWindow[1][1] = 1;
         }
         std::string imageFile;
+        int nThreads = 4;
         // x0, x1, y0, y1
         float cropWindow[2][2];
     };
@@ -82,6 +83,9 @@ namespace pbrt{
     static constexpr float Infinity = std::numeric_limits<float>::infinity();
     static constexpr float Pi = 3.14159265358979323846;
     static constexpr float InvPi = 0.31830988618379067154;
+    static constexpr float PiOver2 = 1.57079632679489661923;
+    static constexpr float PiOver4 = 0.78539816339744830961;
+    static constexpr float ShadowEpsilon = 0.0001f;
 
     inline uint32_t FloatToBits(float f) {
         uint32_t ui;

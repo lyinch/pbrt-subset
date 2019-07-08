@@ -30,7 +30,10 @@ namespace pbrt{
         virtual bool IntersectP(const Ray &r) const;
         GeometricPrimitive(const std::shared_ptr<Shape> &shape,
                            const std::shared_ptr<Material> &material);
-
+        virtual void ComputeScatteringFunctions(SurfaceInteraction *isect,
+                                                MemoryArena &arena,
+                                                TransportMode mode,
+                                                bool allowMultipleLobes) const;
     private:
         // GeometricPrimitive Private Data
         std::shared_ptr<Shape> shape;

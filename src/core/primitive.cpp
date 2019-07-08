@@ -3,6 +3,8 @@
 //
 
 #include "primitive.h"
+#include "light.h"
+#include "interaction.h"
 namespace pbrt{
 
     Primitive::~Primitive() {}
@@ -27,5 +29,12 @@ namespace pbrt{
 
     bool GeometricPrimitive::IntersectP(const Ray &r) const {
         return shape->IntersectP(r);
+    }
+    void GeometricPrimitive::ComputeScatteringFunctions(
+            SurfaceInteraction *isect, MemoryArena &arena, TransportMode mode,
+            bool allowMultipleLobes) const {
+        if (material)
+            material->ComputeScatteringFunctions(isect, arena, mode,
+                                                 allowMultipleLobes);
     }
 }

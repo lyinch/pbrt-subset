@@ -33,5 +33,11 @@ namespace pbrt{
 // AtomicFloat Private Data
         std::atomic<uint32_t> bits;
     };
+
+    int MaxThreadIndex();
+    int NumSystemCores();
+    void ParallelFor2D(std::function<void(Point2i)> func, const Point2i &count);
 }
+
+
 #endif //PBRT_WHITTED_PARALLEL_H

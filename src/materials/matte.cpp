@@ -2,7 +2,11 @@
 // Created by Thierry Backes on 2019-06-27.
 //
 
-#include "matte.h"
+#include "materials/matte.h"
+#include "interaction.h"
+#include "reflection.h"
+#include "texture.h"
+
 namespace pbrt{
 
     void MatteMaterial::ComputeScatteringFunctions(SurfaceInteraction *si, MemoryArena &arena, TransportMode mode,

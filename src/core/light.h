@@ -7,6 +7,7 @@
 
 #include "main.h"
 #include "interaction.h"
+#include "memory.h"
 
 namespace pbrt{
 

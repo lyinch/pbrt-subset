@@ -3,7 +3,7 @@
 //
 
 #include "camera.h"
-
+#include "sampler.h"
 namespace pbrt {
     Camera::~Camera() {
         delete film;

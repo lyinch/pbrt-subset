@@ -3,6 +3,11 @@
 //
 
 #include "reflection.h"
+#include "spectrum.h"
+#include "sampler.h"
+#include "scene.h"
+#include "interaction.h"
+
 namespace pbrt{
 
     Spectrum LambertianReflection::f(const Vector3f &wo, const Vector3f &wi) const {

@@ -6,6 +6,7 @@
 #define PBRT_WHITTED_MATERIAL_H
 
 #include "main.h"
+#include "memory.h"
 
 namespace pbrt{
     enum class TransportMode { Radiance, Importance };

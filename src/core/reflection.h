@@ -7,8 +7,8 @@
 
 #include "main.h"
 #include "geometry.h"
+#include "shape.h"
 #include "spectrum.h"
-#include "interaction.h"
 
 namespace pbrt{
 

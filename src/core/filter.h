@@ -5,6 +5,7 @@
 #ifndef PBRT_WHITTED_FILTER_H
 #define PBRT_WHITTED_FILTER_H
 
+#include "main.h"
 #include "geometry.h"
 
 namespace pbrt{

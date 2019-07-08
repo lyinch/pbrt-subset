@@ -2,8 +2,6 @@
 // Created by Thierry Backes on 2019-06-20.
 //
 
-#include <cmath>
-#include <mutex>
 #include "film.h"
 
 

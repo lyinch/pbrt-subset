@@ -2,8 +2,9 @@
 // Created by Thierry Backes on 2019-06-24.
 //
 
-#include <algorithm>
 #include "light.h"
+#include "scene.h"
+
 namespace pbrt{
 
     Light::~Light() {

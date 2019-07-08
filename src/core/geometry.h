@@ -496,5 +496,10 @@ namespace pbrt {
                 pt.y < b.pMax.y);
     }
 
+    template <typename T>
+    inline float DistanceSquared(const Point3<T> &p1, const Point3<T> &p2) {
+        return (p1 - p2).LengthSquared();
+    }
+
 }
 #endif //PBRT_WHITTED_GEOMETRY_H

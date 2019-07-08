@@ -24,7 +24,8 @@ SET ( CORE_SOURCE
         src/core/reflection.cpp
         src/core/material.cpp
         src/core/texture.cpp
-        src/core/parallel.cpp)
+        src/core/parallel.cpp
+        src/core/sampling.cpp )
 
 
 SET ( CORE_HEADERS
@@ -50,7 +51,8 @@ SET ( CORE_HEADERS
         src/core/material.h
         src/core/texture.h
         src/core/rng.h
-        src/core/parallel.h)
+        src/core/parallel.h
+        src/core/sampling.h)
 
 FILE ( GLOB SOURCE
         src/filters/*.cpp

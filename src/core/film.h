@@ -40,6 +40,15 @@ namespace pbrt{
             AtomicFloat splatXYZ[3];
             float pad;
         };
+
+        Pixel &GetPixel(const Point2i &p) {
+            assert(InsideExclusive(p, croppedPixelBounds));
+            int width = croppedPixelBounds.pMax.x - croppedPixelBounds.pMin.x;
+            int offset = (p.x - croppedPixelBounds.pMin.x) +
+                         (p.y - croppedPixelBounds.pMin.y) * width;
+            return pixels[offset];
+        }
+
         std::unique_ptr<Pixel[]> pixels;
         static constexpr int filterTableWidth = 16;
         float filterTable[filterTableWidth * filterTableWidth];

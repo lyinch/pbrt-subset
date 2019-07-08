@@ -5,6 +5,7 @@
 #ifndef PBRT_WHITTED_TRANSFORM_H
 #define PBRT_WHITTED_TRANSFORM_H
 
+#include "main.h"
 #include "geometry.h"
 
 namespace pbrt{
@@ -54,6 +55,7 @@ namespace pbrt{
                 return Transform(t.mInv, t.m);
             }
 
+            const Matrix4x4 &GetMatrix() const { return m; }
             template <typename T>
             inline Point3<T> operator()(const Point3<T> &p) const;
             template <typename T>
@@ -73,7 +75,8 @@ namespace pbrt{
     Transform Scale(float x, float y, float z);
     Transform LookAt(const Point3f &pos, const Point3f &look, const Vector3f &up);
     Transform Orthographic(float znear, float zfar);
-
+    bool SolveLinearSystem2x2(const float A[2][2], const float B[2], float *x0,
+                              float *x1);
     template <typename T>
     inline Point3<T> Transform::operator()(const Point3<T> &p) const {
         T x = p.x, y = p.y, z = p.z;

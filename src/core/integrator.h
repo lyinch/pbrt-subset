@@ -5,9 +5,12 @@
 #ifndef PBRT_WHITTED_INTEGRATOR_H
 #define PBRT_WHITTED_INTEGRATOR_H
 
-#include "scene.h"
+#include "main.h"
+#include "primitive.h"
+#include "spectrum.h"
+#include "light.h"
 #include "sampler.h"
-#include "camera.h"
+#include "material.h"
 
 namespace pbrt{
     class Integrator{
@@ -24,7 +27,9 @@ namespace pbrt{
                 : camera(camera), sampler(sampler), pixelBounds(pixelBounds) {}
 
         void Render(const Scene &scene) override;
-
+        virtual Spectrum Li(const RayDifferential &ray, const Scene &scene,
+                            Sampler &sampler, MemoryArena &arena,
+                            int depth = 0) const = 0;
     protected:
         std::shared_ptr<const Camera> camera;
 

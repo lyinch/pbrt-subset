@@ -47,6 +47,7 @@ namespace pbrt{
     };
 
     class FilmTile {
+    public:
         FilmTile(const Bounds2i &pixelBounds, const Vector2f &filterRadius,
                  const float *filterTable, int filterTableSize)
                 : pixelBounds(pixelBounds),

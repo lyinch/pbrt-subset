@@ -22,6 +22,11 @@ namespace pbrt{
                    BSDF_TRANSMISSION,
     };
 
+    inline float AbsCosTheta(const Vector3f &w) { return std::abs(w.z); }
+    inline bool SameHemisphere(const Vector3f &w, const Vector3f &wp) {
+        return w.z * wp.z > 0;
+    }
+
     class BSDF {
     public:
         BSDF(const SurfaceInteraction &si, float eta = 1)
@@ -47,6 +52,10 @@ namespace pbrt{
         Spectrum f(const Vector3f &woW, const Vector3f &wiW,
                    BxDFType flags = BSDF_ALL) const;
 
+        Spectrum Sample_f(const Vector3f &wo, Vector3f *wi, const Point2f &u,
+                          float *pdf, BxDFType type = BSDF_ALL,
+                          BxDFType *sampledType = nullptr) const;
+
         const float eta;
     private:
         // BSDF Private Methods
@@ -69,6 +78,10 @@ namespace pbrt{
         virtual Spectrum f(const Vector3f &wo, const Vector3f &wi) const = 0;
         virtual Spectrum rho(const Vector3f &wo, int nSamples,
                              const Point2f *samples) const;
+        virtual Spectrum Sample_f(const Vector3f &wo, Vector3f *wi,
+                                  const Point2f &sample, float *pdf,
+                                  BxDFType *sampledType = nullptr) const;
+        virtual float Pdf(const Vector3f &wo, const Vector3f &wi) const;
 
         const BxDFType type;
     };
@@ -79,7 +92,6 @@ namespace pbrt{
                 : BxDF(BxDFType(BSDF_REFLECTION | BSDF_DIFFUSE)), R(R) {}
         Spectrum f(const Vector3f &wo, const Vector3f &wi) const;
         Spectrum rho(const Vector3f &, int, const Point2f *) const { return R; }
-
 
     private:
         const Spectrum R;

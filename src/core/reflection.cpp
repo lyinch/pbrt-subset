@@ -5,6 +5,7 @@
 #include "reflection.h"
 #include "spectrum.h"
 #include "sampler.h"
+#include "sampling.h"
 #include "scene.h"
 #include "interaction.h"
 
@@ -26,4 +27,20 @@ namespace pbrt{
                 f += bxdfs[i]->f(wo, wi);
         return f;
     }
+
+
+    float BxDF::Pdf(const Vector3f &wo, const Vector3f &wi) const {
+        return SameHemisphere(wo, wi) ? AbsCosTheta(wi) * InvPi : 0;
+    }
+
+    Spectrum
+    BxDF::Sample_f(const Vector3f &wo, Vector3f *wi, const Point2f &sample, float *pdf, BxDFType *sampledType) const {
+        // Cosine-sample the hemisphere, flipping the direction if necessary
+        *wi = CosineSampleHemisphere(sample);
+        if (wo.z < 0) wi->z *= -1;
+        *pdf = Pdf(wo, *wi);
+        return f(wo, *wi);
+    }
+
+
 }

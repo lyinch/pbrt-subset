@@ -8,6 +8,7 @@
 #include "transform.h"
 #include "geometry.h"
 #include "interaction.h"
+#include "memory.h"
 
 namespace pbrt{
     class Shape{

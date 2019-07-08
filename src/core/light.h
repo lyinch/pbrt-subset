@@ -6,10 +6,7 @@
 #define PBRT_WHITTED_LIGHT_H
 
 #include "main.h"
-#include "transform.h"
-#include "geometry.h"
 #include "interaction.h"
-#include "sampler.h"
 
 namespace pbrt{
 

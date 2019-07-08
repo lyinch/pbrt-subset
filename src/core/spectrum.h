@@ -4,6 +4,9 @@
 
 #ifndef PBRT_WHITTED_SPECTRUM_H
 #define PBRT_WHITTED_SPECTRUM_H
+
+#include "main.h"
+
 namespace pbrt {
 
     inline void XYZToRGB(const float xyz[3], float rgb[3]) {
@@ -111,6 +114,7 @@ namespace pbrt {
     };
 
     class RGBSpectrum : public CoefficientSpectrum<3> {
+        using CoefficientSpectrum<3>::c;
     public:
         RGBSpectrum(float v = 0.f) : CoefficientSpectrum<3>(v) {}
         RGBSpectrum(const CoefficientSpectrum<3> &v) : CoefficientSpectrum<3>(v) {}

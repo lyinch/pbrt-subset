@@ -5,8 +5,10 @@
 #ifndef PBRT_WHITTED_PRIMITIVE_H
 #define PBRT_WHITTED_PRIMITIVE_H
 
-#include "geometry.h"
-#include "interaction.h"
+#include "main.h"
+#include "shape.h"
+#include "material.h"
+#include "transform.h"
 
 namespace pbrt{
     class Primitive {

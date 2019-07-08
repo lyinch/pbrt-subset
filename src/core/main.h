@@ -42,6 +42,8 @@ namespace pbrt{
     class Shape;
     class Primitive;
     class GeometricPrimitive;
+    template <int nSpectrumSamples>
+    class CoefficientSpectrum;
     class RGBSpectrum;
     typedef RGBSpectrum Spectrum;
     class Camera;
@@ -57,7 +59,9 @@ namespace pbrt{
     class Light;
     class VisibilityTester;
 
+    class RNG;
     class MemoryArena;
+    struct Matrix4x4;
 
     struct Options {
         Options() {

@@ -301,7 +301,7 @@ namespace pbrt {
                 : Ray(o, d, tMax) {
             hasDifferentials = false;
         }
-        void ScaleDifferentials(Float s) {
+        void ScaleDifferentials(float s) {
             rxOrigin = o + (rxOrigin - o) * s;
             ryOrigin = o + (ryOrigin - o) * s;
             rxDirection = d + (rxDirection - d) * s;

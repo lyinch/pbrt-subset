@@ -8,7 +8,6 @@
 #include "main.h"
 #include "geometry.h"
 #include "transform.h"
-#include "memory.h"
 #include "material.h"
 
  namespace pbrt {
@@ -42,6 +41,7 @@
                  const RayDifferential &ray, MemoryArena &arena,
                  bool allowMultipleLobes = false,
                  TransportMode mode = TransportMode::Radiance);
+         void ComputeDifferentials(const RayDifferential &r) const;
          Spectrum Le(const Vector3f &w) const;
 
          Point2f uv;
@@ -55,7 +55,8 @@
          } shading;
          BSDF *bsdf = nullptr;
          const Primitive *primitive = nullptr;
-
+         mutable Vector3f dpdx, dpdy;
+         mutable float dudx = 0, dvdx = 0, dudy = 0, dvdy = 0;
      };
  }
 

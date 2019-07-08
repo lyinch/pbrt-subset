@@ -72,8 +72,6 @@ namespace pbrt {
                 : floatTextures(std::make_shared<FloatTextureMap>()),
                   spectrumTextures(std::make_shared<SpectrumTextureMap>()),
                   namedMaterials(std::make_shared<NamedMaterialMap>()) {
-            currentMaterial = std::make_shared<MaterialInstance>("matte");
-
         }
 
         std::shared_ptr<Material> GetMaterialForShape();
@@ -324,6 +322,7 @@ namespace pbrt {
             film = CreateFilm(std::move(filter));
         return film;
     }
+
     Integrator *RenderOptions::MakeIntegrator() const {
         std::shared_ptr<const Camera> camera(MakeCamera());
         std::shared_ptr<Sampler> sampler =
@@ -331,6 +330,8 @@ namespace pbrt {
         Integrator *integrator = nullptr;
         if (IntegratorName == "whitted")
             integrator = CreateWhittedIntegrator(sampler, camera);
+
+        return integrator;
     }
 
     Camera *RenderOptions::MakeCamera() const {

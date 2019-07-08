@@ -149,6 +149,12 @@ namespace pbrt {
         Point2<T> operator+(const Point2<T> &p) const {
             return Point2<T>(x + p.x, y + p.y);
         }
+
+        template <typename U>
+        Point2<T> operator*(U f) const {
+            return Point2<T>(f * x, f * y);
+        }
+
         Vector2<T> operator-(const Point2<T> &p) const {
             return Vector2<T>(x - p.x, y - p.y);
         }

@@ -71,6 +71,12 @@ namespace pbrt {
 
         Vector3<T> operator-() const { return Vector3<T>(-x, -y, -z); }
 
+        template <typename U>
+        Vector3<T> operator/(U f) const {
+            float inv = (float)1 / f;
+            return Vector3<T>(x * inv, y * inv, z * inv);
+        }
+
         T operator[](int i) const {
             assert(i >= 0 && i <= 2);
             if (i == 0) return x;
@@ -289,7 +295,22 @@ namespace pbrt {
     };
 
     class RayDifferential : public Ray {
-
+    public:
+        RayDifferential() { hasDifferentials = false; }
+        RayDifferential(const Point3f &o, const Vector3f &d, float tMax = Infinity)
+                : Ray(o, d, tMax) {
+            hasDifferentials = false;
+        }
+        void ScaleDifferentials(Float s) {
+            rxOrigin = o + (rxOrigin - o) * s;
+            ryOrigin = o + (ryOrigin - o) * s;
+            rxDirection = d + (rxDirection - d) * s;
+            ryDirection = d + (ryDirection - d) * s;
+        }
+        RayDifferential(const Ray &ray) : Ray(ray) { hasDifferentials = false; }
+        bool hasDifferentials;
+        Point3f rxOrigin, ryOrigin;
+        Vector3f rxDirection, ryDirection;
     };
 
     template <typename T>

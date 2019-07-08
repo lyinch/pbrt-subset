@@ -17,10 +17,17 @@
 
          Interaction(const Point3f &p, const Normal3f &n, const Vector3f &wo) :
                  p(p), wo(wo), n(n) {}
-
+         Interaction(const Point3f &p)
+                 : p(p) {}
          Ray SpawnRay(const Vector3f &d) const {
              Point3f o = OffsetRayOrigin(p, n, d);
              return Ray(o, d, Infinity);
+         }
+         Ray SpawnRayTo(const Interaction &it) const {
+             Point3f origin = OffsetRayOrigin(p, n, it.p - p);
+             Point3f target = OffsetRayOrigin(it.p, it.n, origin - it.p);
+             Vector3f d = target - origin;
+             return Ray(origin, d, 1 - ShadowEpsilon);
          }
          Point3f p;
          Vector3f wo;
@@ -30,7 +37,6 @@
 
      class SurfaceInteraction : public Interaction {
      public:
-
          SurfaceInteraction() {}
          SurfaceInteraction(const Point3f &p,
                             const Point2f &uv, const Vector3f &wo,

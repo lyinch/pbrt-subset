@@ -162,7 +162,10 @@ namespace pbrt {
     public:
         Point3() { x = y = z = 0; }
         Point3(T x, T y, T z) : x(x), y(y), z(z) {}
-
+        template <typename U>
+        explicit operator Vector3<U>() const {
+            return Vector3<U>(x, y, z);
+        }
         T x, y, z;
 
         Point3<T> &operator+=(const Vector3<T> &v) {

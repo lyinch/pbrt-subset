@@ -76,7 +76,7 @@ namespace pbrt {
             // Initialize _A_, _Bx_, and _By_ matrices for offset computation
             float A[2][2] = {{dpdu[dim[0]], dpdv[dim[0]]},
                              {dpdu[dim[1]], dpdv[dim[1]]}};
-            flaot Bx[2] = {px[dim[0]] - p[dim[0]], px[dim[1]] - p[dim[1]]};
+            float Bx[2] = {px[dim[0]] - p[dim[0]], px[dim[1]] - p[dim[1]]};
             float By[2] = {py[dim[0]] - p[dim[0]], py[dim[1]] - p[dim[1]]};
             if (!SolveLinearSystem2x2(A, Bx, &dudx, &dvdx)) dudx = dvdx = 0;
             if (!SolveLinearSystem2x2(A, By, &dudy, &dvdy)) dudy = dvdy = 0;

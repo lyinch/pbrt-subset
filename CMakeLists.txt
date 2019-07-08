@@ -24,7 +24,7 @@ SET ( CORE_SOURCE
         src/core/reflection.cpp
         src/core/material.cpp
         src/core/texture.cpp
-        )
+        src/core/parallel.cpp)
 
 
 SET ( CORE_HEADERS

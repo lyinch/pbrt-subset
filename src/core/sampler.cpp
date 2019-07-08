@@ -3,6 +3,7 @@
 //
 
 #include "sampler.h"
+#include "sampling.h"
 #include "camera.h"
 
 

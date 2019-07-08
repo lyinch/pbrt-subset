@@ -4,6 +4,8 @@
 
 #ifndef PBRT_WHITTED_PARSER_H
 #define PBRT_WHITTED_PARSER_H
+
+#include "main.h"
 namespace pbrt {
     void parse();
 }

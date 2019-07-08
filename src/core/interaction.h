@@ -9,6 +9,7 @@
 #include "geometry.h"
 #include "transform.h"
 #include "material.h"
+#include "spectrum.h"
 
  namespace pbrt {
      struct Interaction {

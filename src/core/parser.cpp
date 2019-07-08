@@ -5,6 +5,8 @@
 #include <string>
 #include "parser.h"
 #include "api.h"
+#include "memory.h"
+
 namespace pbrt {
 
     void parse() {

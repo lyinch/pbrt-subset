@@ -3,3 +3,6 @@
 //
 
 #include "spectrum.h"
+namespace pbrt{
+
+}

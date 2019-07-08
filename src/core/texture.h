@@ -5,7 +5,11 @@
 #ifndef PBRT_WHITTED_TEXTURE_H
 #define PBRT_WHITTED_TEXTURE_H
 
-#include "interaction.h"
+#include "main.h"
+#include "spectrum.h"
+#include "geometry.h"
+#include "transform.h"
+#include "memory.h"
 
 namespace pbrt{
     template <typename T>

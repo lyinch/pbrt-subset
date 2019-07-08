@@ -6,6 +6,9 @@
 #include "scene.h"
 #include "interaction.h"
 #include "parallel.h"
+#include "film.h"
+#include "sampler.h"
+
 #include "camera.h"
 
 namespace pbrt{

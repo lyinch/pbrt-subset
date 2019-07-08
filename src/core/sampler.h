@@ -5,10 +5,9 @@
 #ifndef PBRT_WHITTED_SAMPLER_H
 #define PBRT_WHITTED_SAMPLER_H
 
-#include <cstdint>
-#include <memory>
-#include "geometry.h"
 #include "main.h"
+#include "geometry.h"
+#include "rng.h"
 
 namespace pbrt {
     class Sampler{

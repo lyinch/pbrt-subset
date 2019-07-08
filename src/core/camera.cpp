@@ -4,6 +4,8 @@
 
 #include "camera.h"
 #include "sampler.h"
+#include "sampling.h"
+
 namespace pbrt {
     Camera::~Camera() {
         delete film;

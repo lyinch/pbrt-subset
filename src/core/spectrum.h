@@ -41,6 +41,11 @@ namespace pbrt {
         }
 
         static const int nSamples = nSpectrumSamples;
+        bool HasNaNs() const {
+            for (int i = 0; i < nSpectrumSamples; ++i)
+                if (std::isnan(c[i])) return true;
+            return false;
+        }
         CoefficientSpectrum &operator+=(const CoefficientSpectrum &s2) {
             for (int i = 0; i < nSpectrumSamples; ++i) c[i] += s2.c[i];
             return *this;
@@ -139,6 +144,11 @@ namespace pbrt {
         }
 
         void ToXYZ(float xyz[3]) const { RGBToXYZ(c, xyz); }
+
+        float y() const {
+            const float YWeight[3] = {0.212671f, 0.715160f, 0.072169f};
+            return YWeight[0] * c[0] + YWeight[1] * c[1] + YWeight[2] * c[2];
+        }
 
         static RGBSpectrum FromXYZ(const float xyz[3],
                                    SpectrumType type = SpectrumType::Reflectance) {

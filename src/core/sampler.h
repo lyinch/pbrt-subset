@@ -14,7 +14,7 @@ namespace pbrt {
     public:
         virtual ~Sampler();
         Sampler (int64_t samplesPerPixel);
-        virtual void StartPixel( Point2i &p);
+        virtual void StartPixel(const Point2i &p);
         // return sample value for the next or the two next dimensions
         virtual float Get1D() = 0;
         virtual Point2f Get2D() = 0;

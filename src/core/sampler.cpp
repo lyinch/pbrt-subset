@@ -18,7 +18,7 @@ namespace pbrt{
         return cs;
     }
 
-    void Sampler::StartPixel(Point2i &p) {
+    void Sampler::StartPixel(const Point2i &p) {
         currentPixel = p;
         currentPixelSampleIndex = 0;
 

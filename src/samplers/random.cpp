@@ -12,6 +12,18 @@ namespace pbrt {
         return std::unique_ptr<Sampler>(rs);
     }
 
+    void RandomSampler::StartPixel(const Point2i &p) {
+        Sampler::StartPixel(p);
+    }
+
+    float RandomSampler::Get1D() {
+        return rng.UniformFloat();
+    }
+
+    Point2f RandomSampler::Get2D() {
+        return {rng.UniformFloat(), rng.UniformFloat()};
+    }
+
     Sampler *CreateRandomSampler() {
         return new RandomSampler(4);
     }

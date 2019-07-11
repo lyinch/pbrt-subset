@@ -7,6 +7,7 @@
 
 #include "main.h"
 #include <list>
+#include <cstddef>
 
 namespace pbrt{
 

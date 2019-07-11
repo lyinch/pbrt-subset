@@ -196,6 +196,14 @@ namespace pbrt {
             return Point3<T>(inv * x, inv * y, inv * z);
         }
 
+        template <typename U>
+        Point3<T> &operator*=(U f) {
+            x *= f;
+            y *= f;
+            z *= f;
+            return *this;
+        }
+
         T operator[](int i) const {
             if (i == 0) return x;
             if (i == 1) return y;
@@ -258,6 +266,16 @@ namespace pbrt {
         Normal3<T> operator*(U f) const {
             return Normal3<T>(f * x, f * y, f * z);
         }
+
+        template <typename U>
+        Normal3<T> operator/(U f) const {
+            float inv = (float)1 / f;
+            return Normal3<T>(x * inv, y * inv, z * inv);
+        }
+
+        float LengthSquared() const { return x * x + y * y + z * z; }
+        float Length() const { return std::sqrt(LengthSquared()); }
+
         T x, y, z;
 
     };
@@ -311,6 +329,11 @@ namespace pbrt {
     template <typename T>
     inline Vector3<T> Normalize(const Vector3<T> &v) {
         return v / v.Length();
+    }
+
+    template <typename T>
+    inline Normal3<T> Normalize(const Normal3<T> &n) {
+        return n / n.Length();
     }
 
 
@@ -402,7 +425,22 @@ namespace pbrt {
 
     template <typename T>
     class Bounds3 {
+    public:
+        Bounds3() {
+            T minNum = std::numeric_limits<T>::lowest();
+            T maxNum = std::numeric_limits<T>::max();
+            pMin = Point3<T>(maxNum, maxNum, maxNum);
+            pMax = Point3<T>(minNum, minNum, minNum);
+        }
+        explicit Bounds3(const Point3<T> &p) : pMin(p), pMax(p) {}
+        Bounds3(const Point3<T> &p1, const Point3<T> &p2)
+                : pMin(std::min(p1.x, p2.x), std::min(p1.y, p2.y),
+                       std::min(p1.z, p2.z)),
+                  pMax(std::max(p1.x, p2.x), std::max(p1.y, p2.y),
+                       std::max(p1.z, p2.z)) {}
 
+
+        Point3<T> pMin, pMax;
     };
 
     typedef Bounds2<float> Bounds2f;
@@ -410,6 +448,25 @@ namespace pbrt {
     typedef Bounds3<float> Bounds3f;
     typedef Bounds3<int> Bounds3i;
 
+    template <typename T>
+    Bounds3<T> Union(const Bounds3<T> &b, const Point3<T> &p) {
+        Bounds3<T> ret;
+        ret.pMin = Min(b.pMin, p);
+        ret.pMax = Max(b.pMax, p);
+        return ret;
+    }
+
+    template <typename T>
+    Point3<T> Min(const Point3<T> &p1, const Point3<T> &p2) {
+        return Point3<T>(std::min(p1.x, p2.x), std::min(p1.y, p2.y),
+                         std::min(p1.z, p2.z));
+    }
+
+    template <typename T>
+    Point3<T> Max(const Point3<T> &p1, const Point3<T> &p2) {
+        return Point3<T>(std::max(p1.x, p2.x), std::max(p1.y, p2.y),
+                         std::max(p1.z, p2.z));
+    }
 
     class Bounds2iIterator : public std::forward_iterator_tag {
     public:
@@ -497,8 +554,32 @@ namespace pbrt {
     }
 
     template <typename T>
+    inline float Distance(const Point3<T> &p1, const Point3<T> &p2) {
+        return (p1 - p2).Length();
+    }
+
+    template <typename T>
     inline float DistanceSquared(const Point3<T> &p1, const Point3<T> &p2) {
         return (p1 - p2).LengthSquared();
+    }
+
+    inline bool Quadratic(float A, float B, float C, float *t0, float *t1) {
+        // Find quadratic discriminant
+        double discrim = (double)B * (double)B - 4. * (double)A * (double)C;
+        if (discrim < 0.) return false;
+        double rootDiscrim = std::sqrt(discrim);
+
+
+        // Compute quadratic _t_ values
+        float q;
+        if ((float)B < 0)
+            q = -.5 * (B - rootDiscrim);
+        else
+            q = -.5 * (B + rootDiscrim);
+        *t0 = q / A;
+        *t1 = C / q;
+        if ((float)*t0 > (float)*t1) std::swap(*t0, *t1);
+        return true;
     }
 
 }

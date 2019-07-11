@@ -54,6 +54,7 @@ namespace pbrt {
         std::string IntegratorName = "whitted";
         std::string CameraName = "orthographic";
         TransformSet CameraToWorld;
+        std::vector<std::shared_ptr<Primitive>> primitives;
         std::vector<std::shared_ptr<Light>> lights;
 
     };
@@ -288,6 +289,10 @@ namespace pbrt {
                                                 Translate(Vector3f(dx, dy, dz));)
     }
 
+    void pbrtCleanup() {
+
+    }
+
 
     std::shared_ptr<Sampler> MakeSampler(const std::string &name,
                                          const Film *film) {
@@ -339,6 +344,14 @@ namespace pbrt {
         Film *film = MakeFilm(FilmName, std::move(filter));
         Camera *camera = pbrt::MakeCamera(CameraName,CameraToWorld,film);
         return camera;
+    }
+
+    Scene *RenderOptions::MakeScene() {
+        std::shared_ptr<Primitive> accelerator;
+        Scene *scene = new Scene(accelerator,lights);
+        primitives.clear();
+        lights.clear();
+        return scene;
     }
 
 }

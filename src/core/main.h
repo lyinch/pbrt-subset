@@ -12,6 +12,11 @@
 #include <cmath>
 
 #include <alloca.h>
+#include <iostream>
+
+#ifndef PBRT_L1_CACHE_LINE_SIZE
+    #define PBRT_L1_CACHE_LINE_SIZE 64
+#endif
 
 namespace pbrt{
 

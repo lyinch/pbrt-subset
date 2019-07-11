@@ -3,6 +3,42 @@ project(pbrt_whitted)
 
 set(CMAKE_CXX_STANDARD 11)
 
+
+
+########################################
+# Aligned memory allocation
+INCLUDE (CheckCXXSourceCompiles)
+INCLUDE (CheckCXXSourceRuns)
+
+CHECK_CXX_SOURCE_COMPILES ( "
+#include <malloc.h>
+int main() { void * ptr = _aligned_malloc(1024, 32); }
+" HAVE__ALIGNED_MALLOC )
+
+CHECK_CXX_SOURCE_COMPILES ( "
+#include <stdlib.h>
+int main() {
+  void *ptr;
+  posix_memalign(&ptr, 32, 1024);
+} " HAVE_POSIX_MEMALIGN )
+
+CHECK_CXX_SOURCE_COMPILES ( "
+#include <malloc.h>
+int main() {
+    void *ptr = memalign(32, 1024);
+} " HAVE_MEMALIGN )
+
+IF ( HAVE__ALIGNED_MALLOC )
+    ADD_DEFINITIONS ( -D PBRT_HAVE__ALIGNED_MALLOC )
+ELSEIF ( HAVE_POSIX_MEMALIGN )
+    ADD_DEFINITIONS ( -D PBRT_HAVE_POSIX_MEMALIGN )
+ELSEIF ( HAVE_MEMALIGN )
+    ADD_DEFINITIONS ( -D PBRTHAVE_MEMALIGN )
+ELSE ()
+    MESSAGE ( SEND_ERROR "Unable to find a way to allocate aligned memory" )
+ENDIF ()
+
+
 SET ( CORE_SOURCE
         src/core/parser.cpp
         src/core/spectrum.cpp
@@ -81,3 +117,10 @@ SET(ALL_PBRT_LIBS
 
 add_executable(pbrt_whitted src/main/main.cpp)
 TARGET_LINK_LIBRARIES ( pbrt_whitted ${ALL_PBRT_LIBS} )
+
+
+INSTALL ( TARGETS
+        pbrt
+        DESTINATION
+        lib
+        )

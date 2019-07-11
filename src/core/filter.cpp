@@ -3,3 +3,8 @@
 //
 
 #include "filter.h"
+namespace pbrt {
+    Filter::~Filter() {
+
+    }
+}

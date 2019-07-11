@@ -42,5 +42,17 @@ namespace pbrt{
         return f(wo, *wi);
     }
 
+    Spectrum BxDF::rho(const Vector3f &w, int nSamples, const Point2f *u) const {
+        Spectrum r(0.);
+        for (int i = 0; i < nSamples; ++i) {
+            // Estimate one term of $\rho_\roman{hd}$
+            Vector3f wi;
+            float pdf = 0;
+            Spectrum f = Sample_f(w, &wi, u[i], &pdf);
+            if (pdf > 0) r += f * AbsCosTheta(wi) / pdf;
+        }
+        return r / nSamples;
+    }
+
 
 }

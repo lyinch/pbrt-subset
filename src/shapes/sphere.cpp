@@ -14,7 +14,7 @@ namespace pbrt{
         float phi;
         Point3f pHit;
         Vector3f oErr, dErr;
-        Ray ray = (*WorldToObject)(r, &oErr, &dErr);
+        Ray ray = (*WorldToObject)(r);
 
         float ox(ray.o.x), oy(ray.o.y), oz(ray.o.z);
         float dx(ray.d.x), dy(ray.d.y), dz(ray.d.z);

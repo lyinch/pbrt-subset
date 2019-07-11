@@ -55,6 +55,9 @@ namespace pbrt{
                 return Transform(t.mInv, t.m);
             }
 
+            template <typename T>
+            inline Normal3<T> operator()(const Normal3<T> &) const;
+
             const Matrix4x4 &GetMatrix() const { return m; }
             template <typename T>
             inline Point3<T> operator()(const Point3<T> &p) const;
@@ -62,6 +65,7 @@ namespace pbrt{
             inline Vector3<T> operator()(const Vector3<T> &v) const;
             inline Ray operator()(const Ray &r) const;
             Bounds3f operator()(const Bounds3f &b) const;
+            SurfaceInteraction operator()(const SurfaceInteraction &si) const;
 
             Transform operator*(const Transform &t2) const;
             bool operator==(const Transform &t) const {

@@ -3,7 +3,7 @@
 //
 
 #include "transform.h"
-#include <memory>
+#include "interaction.h"
 
 namespace pbrt{
 
@@ -81,6 +81,59 @@ namespace pbrt{
 
     Transform Transform::operator*(const Transform &t2) const {
         return Transform(Matrix4x4::Mul(m, t2.m), Matrix4x4::Mul(t2.mInv, mInv));
+    }
+
+    SurfaceInteraction Transform::operator()(const SurfaceInteraction &si) const {
+        SurfaceInteraction ret;
+        // Transform _p_ and _pError_ in _SurfaceInteraction_
+        ret.p = (*this)(si.p);
+
+        // Transform remaining members of _SurfaceInteraction_
+        const Transform &t = *this;
+        ret.n = Normalize(t(si.n));
+        ret.wo = Normalize(t(si.wo));
+        ret.uv = si.uv;
+        ret.shape = si.shape;
+        ret.dpdu = t(si.dpdu);
+        ret.dpdv = t(si.dpdv);
+        ret.dndu = t(si.dndu);
+        ret.dndv = t(si.dndv);
+        ret.shading.n = Normalize(t(si.shading.n));
+        ret.shading.dpdu = t(si.shading.dpdu);
+        ret.shading.dpdv = t(si.shading.dpdv);
+        ret.shading.dndu = t(si.shading.dndu);
+        ret.shading.dndv = t(si.shading.dndv);
+        ret.dudx = si.dudx;
+        ret.dvdx = si.dvdx;
+        ret.dudy = si.dudy;
+        ret.dvdy = si.dvdy;
+        ret.dpdx = t(si.dpdx);
+        ret.dpdy = t(si.dpdy);
+        ret.bsdf = si.bsdf;
+        ret.primitive = si.primitive;
+        //    ret.n = Faceforward(ret.n, ret.shading.n);
+        //ret.shading.n = Faceforward(ret.shading.n, ret.n);
+        return ret;
+    }
+
+    template<typename T>
+    Normal3<T> Transform::operator()(const Normal3<T> &n) const {
+        T x = n.x, y = n.y, z = n.z;
+        return Normal3<T>(mInv.m[0][0] * x + mInv.m[1][0] * y + mInv.m[2][0] * z,
+                          mInv.m[0][1] * x + mInv.m[1][1] * y + mInv.m[2][1] * z,
+                          mInv.m[0][2] * x + mInv.m[1][2] * y + mInv.m[2][2] * z);    }
+
+    Bounds3f Transform::operator()(const Bounds3f &b) const {
+        const Transform &M = *this;
+        Bounds3f ret(M(Point3f(b.pMin.x, b.pMin.y, b.pMin.z)));
+        ret = Union(ret, M(Point3f(b.pMax.x, b.pMin.y, b.pMin.z)));
+        ret = Union(ret, M(Point3f(b.pMin.x, b.pMax.y, b.pMin.z)));
+        ret = Union(ret, M(Point3f(b.pMin.x, b.pMin.y, b.pMax.z)));
+        ret = Union(ret, M(Point3f(b.pMin.x, b.pMax.y, b.pMax.z)));
+        ret = Union(ret, M(Point3f(b.pMax.x, b.pMax.y, b.pMin.z)));
+        ret = Union(ret, M(Point3f(b.pMax.x, b.pMin.y, b.pMax.z)));
+        ret = Union(ret, M(Point3f(b.pMax.x, b.pMax.y, b.pMax.z)));
+        return ret;
     }
 
     Transform Orthographic(float zNear, float zFar) {

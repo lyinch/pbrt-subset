@@ -14,8 +14,8 @@ namespace pbrt{
     class Scene{
 
     public:
-        Scene(std::shared_ptr<Primitive> aggregate,
-              const std::vector<std::shared_ptr<Light>> &lights) : lights(lights), aggregate(aggregate) {
+        Scene(std::shared_ptr<Primitive> ag,
+              const std::vector<std::shared_ptr<Light>> &lights) : lights(lights), aggregate(ag) {
             worldBound = aggregate->WorldBound();
         }
 

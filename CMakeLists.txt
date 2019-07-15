@@ -61,7 +61,8 @@ SET ( CORE_SOURCE
         src/core/material.cpp
         src/core/texture.cpp
         src/core/parallel.cpp
-        src/core/sampling.cpp )
+        src/core/sampling.cpp
+        src/accelerators/bvh.cpp )
 
 
 SET ( CORE_HEADERS
@@ -88,7 +89,8 @@ SET ( CORE_HEADERS
         src/core/texture.h
         src/core/rng.h
         src/core/parallel.h
-        src/core/sampling.h)
+        src/core/sampling.h
+        src/accelerators/bvh.h)
 
 FILE ( GLOB SOURCE
         src/filters/*.cpp
@@ -98,6 +100,7 @@ FILE ( GLOB SOURCE
         src/shapes/*.cpp
         src/materials/*.cpp
         src/textures/*.cpp
+        src/accelerators/*.cpp
         )
 
 INCLUDE_DIRECTORIES(src)

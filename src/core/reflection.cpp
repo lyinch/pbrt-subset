@@ -28,6 +28,12 @@ namespace pbrt{
         return f;
     }
 
+    Spectrum BSDF::Sample_f(const Vector3f &wo, Vector3f *wi, const Point2f &u, float *pdf, BxDFType type,
+                            BxDFType *sampledType) const {
+        std::cout << "BSDF::Sample_f should not be called..." << std::endl;
+        return pbrt::Spectrum();
+    }
+
 
     float BxDF::Pdf(const Vector3f &wo, const Vector3f &wi) const {
         return SameHemisphere(wo, wi) ? AbsCosTheta(wi) * InvPi : 0;

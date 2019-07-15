@@ -7,10 +7,10 @@
 
 namespace pbrt{
 
-    Film::Film(const Point2i &resolution, const Bounds2f &cropWindow, std::unique_ptr<Filter> filter,
+    Film::Film(const Point2i &resolution, const Bounds2f &cropWindow, std::unique_ptr<Filter> filt,
                const std::string &filename, float scale):
             fullResolution(resolution),
-            filter(std::move(filter)),
+            filter(std::move(filt)),
             filename(filename),
             scale(scale){
         croppedPixelBounds =
